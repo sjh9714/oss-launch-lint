@@ -45,7 +45,7 @@
 
 | Date | Stars | Unique visitors | Clones | Issues/PRs | What changed today | Lesson |
 |---|---:|---:|---:|---:|---|---|
-| Day 0 | 0 |  |  |  | Repo published, CI passed, v0.1.0 released | Promotion not posted yet. |
+| Day 0 | 0 |  |  |  | Repo published, CI passed, v0.1.0 released | First feedback posts published to X, Threads, and Bluesky. |
 | Day 1 |  |  |  |  |  |  |
 | Day 2 |  |  |  |  |  |  |
 | Day 3 |  |  |  |  |  |  |
@@ -60,7 +60,7 @@
 - [x] Main branch is pushed.
 - [x] GitHub Actions CI passes.
 - [x] v0.1.0 release URL is recorded.
-- [ ] Approved posts have URLs recorded above.
+- [x] Approved posts have URLs recorded above.
 - [ ] GitHub `Insights -> Traffic` visitors, clones, and referrers are copied daily for 7 days.
 
 ## 24-hour follow-up checklist
