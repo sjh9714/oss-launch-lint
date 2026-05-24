@@ -1,0 +1,324 @@
+좋아요. 지금 상태는 **“레포 MVP/품질 패키징 완료”**이고, 아직 **“실제 공개 런칭/홍보*는 시작 전**입니다. 이제부터는 Codex에게 한 번 더 시키거나, 직접 터미널에서 아래 순서대로 밀면 됩니다.
+
+핵심 주의점 하나: **README에 `npm install -g oss-launch-lint` 같은 설치 문구가 있는데 npm publish를 안 했다면, 그대로 공개하면 첫 사용자가 실패합니다.** 공개 전에 `README` 설치 섹션이 “GitHub에서 클론해서 실행”인지, 아니면 실제 npm 배포까지 끝났는지 반드시 맞춰야 합니다.
+
+## 1. 먼저 로컬에서 최종 검수
+
+터미널에서:
+
+```bash
+cd /Users/sungjh/Documents/star16
+
+git status
+git branch --show-current
+git log --oneline -5
+
+grep -R "YOUR_USERNAME\|YOUR_GITHUB_USERNAME\|PLACEHOLDER\|TODO" \
+  README.md package.json docs .github src 2>/dev/null || true
+
+npm test
+npm run lint
+npm run build
+npm pack --dry-run
+```
+
+`YOUR_USERNAME`이 나오면 전부 실제 GitHub 아이디로 바꾸세요.
+
+```bash
+# 예: GitHub 아이디가 sungjh라면
+perl -pi -e 's/YOUR_USERNAME/sungjh/g; s/YOUR_GITHUB_USERNAME/sungjh/g' \
+  README.md package.json docs/*.md 2>/dev/null || true
+```
+
+그다음 변경사항 커밋:
+
+```bash
+git add -A
+git commit -m "Prepare oss-launch-lint for public launch"
+```
+
+이미 커밋되어 있으면 `nothing to commit`이 나올 수 있고, 그건 괜찮습니다.
+
+## 2. `main` 브랜치로 정리
+
+지금 브랜치가 `codex/oss-launch-lint-mvp`라면, 공개 레포 기본 브랜치는 `main`으로 두는 게 좋습니다.
+
+```bash
+# main이 없으면 현재 상태에서 main 생성
+if git show-ref --verify --quiet refs/heads/main; then
+  git switch main
+  git merge --no-ff codex/oss-launch-lint-mvp
+else
+  git switch -c main
+fi
+```
+
+다시 한 번:
+
+```bash
+npm test && npm run lint && npm run build
+```
+
+## 3. GitHub 공개 레포 생성 + push
+
+GitHub CLI를 쓰면 기존 로컬 디렉터리에서 바로 public repo를 만들고 push할 수 있습니다. 공식 `gh repo create` 문서 기준으로 `--source`는 로컬 저장소를 원격 repo 생성에 쓰고, `--push`는 로컬 커밋을 새 repo에 push합니다. ([GitHub CLI][1])
+
+```bash
+gh auth status || gh auth login
+
+gh repo create oss-launch-lint \
+  --public \
+  --source=. \
+  --remote=origin \
+  --push \
+  --description "Audit whether a GitHub repo is ready for an ethical open-source launch."
+```
+
+조직 계정에 만들 거면:
+
+```bash
+gh repo create YOUR_ORG/oss-launch-lint \
+  --public \
+  --source=. \
+  --remote=origin \
+  --push \
+  --description "Audit whether a GitHub repo is ready for an ethical open-source launch."
+```
+
+## 4. 설명, 토픽, 설정 넣기
+
+`gh repo edit`는 repo 설정 수정용이고, 현재 매뉴얼에 `--description`, `--homepage`, `--add-topic` 옵션이 있습니다. ([GitHub CLI][2])
+
+```bash
+OWNER="$(gh api user --jq .login)"
+REPO="$OWNER/oss-launch-lint"
+
+gh repo edit "$REPO" \
+  --description "Audit whether a GitHub repo is ready for an ethical open-source launch." \
+  --homepage "https://github.com/$REPO" \
+  --enable-issues=true \
+  --enable-wiki=false \
+  --add-topic open-source \
+  --add-topic cli \
+  --add-topic github \
+  --add-topic developer-tools \
+  --add-topic maintainer-tools \
+  --add-topic typescript \
+  --add-topic oss \
+  --add-topic launch \
+  --add-topic checklist
+```
+
+이후 GitHub 웹에서 확인할 것:
+
+```text
+https://github.com/YOUR_USERNAME/oss-launch-lint
+```
+
+확인 포인트는 README 첫 화면입니다.
+
+| 체크         | 기준                                       |
+| ---------- | ---------------------------------------- |
+| 첫 5줄       | 무엇인지, 누구에게 유용한지 바로 보이는가                  |
+| 설치         | 실제로 동작하는 설치 방법인가                         |
+| Quickstart | 복붙해서 실행 가능한가                             |
+| 예시 출력      | Markdown/JSON 결과가 보이는가                   |
+| CTA        | “피드백 주세요”가 자연스러운가                        |
+| 배지         | CI, license, npm 또는 package 상태가 거짓말이 아닌가 |
+
+## 5. v0.1.0 릴리즈 만들기
+
+GitHub CLI의 `gh release create`는 새 GitHub Release를 만드는 명령이고, 태그가 없으면 기본 브랜치 최신 상태 기준으로 태그를 만들 수 있지만, 안정적으로 하려면 로컬에서 annotated tag를 만들고 push한 뒤 release를 만드는 게 좋습니다. ([GitHub CLI][3])
+
+```bash
+git tag -a v0.1.0 -m "v0.1.0"
+git push origin v0.1.0
+
+gh release create v0.1.0 \
+  --title "oss-launch-lint v0.1.0" \
+  --notes-file docs/release-notes-v0.1.0.md
+```
+
+README가 npm 설치를 전제로 한다면 여기서 둘 중 하나를 선택해야 합니다.
+
+**A안: npm publish 안 함**
+
+README 설치 섹션을 이렇게 바꾸세요.
+
+````md
+## Quickstart
+
+```bash
+git clone https://github.com/YOUR_USERNAME/oss-launch-lint.git
+cd oss-launch-lint
+npm install
+npm run build
+node dist/cli.js .
+````
+
+````
+
+**B안: npm publish 함**
+
+`package.json`의 `name`, `bin`, `files`, `version`, `license`를 확인한 뒤:
+
+```bash
+npm login
+npm publish --dry-run
+npm publish
+````
+
+개인적으로는 처음에는 **A안으로 공개 → 반응 있으면 npm publish**가 더 안전합니다. 설치 실패 리스크가 줄고, v0.1.0에서 피드백을 빨리 받을 수 있습니다.
+
+## 6. Codex에게 줄 다음 프롬프트
+
+아래를 그대로 Codex Goal에 넣으세요. 이건 **출시 전 검수 + 공개 준비**용입니다.
+
+```text
+/goal
+You are working in /Users/sungjh/Documents/star16 on branch codex/oss-launch-lint-mvp.
+
+Goal:
+Prepare oss-launch-lint for public GitHub launch and produce an exact launch checklist. Do not perform external posting, npm publishing, or GitHub release creation unless I explicitly approve.
+
+Context:
+The MVP is implemented and verified:
+- npm test: 9/9 passing
+- npm run lint: passed
+- npm run build: passed
+- npm pack --dry-run: passed
+- CLI smoke tests: demo fixture 100/100, this repo 100/100
+
+Tasks:
+1. Search the repo for placeholders such as YOUR_USERNAME, YOUR_GITHUB_USERNAME, TODO, PLACEHOLDER, example.com, and fake links.
+2. Make README installation instructions truthful. If npm has not been published, do not claim npm install works. Prefer a GitHub clone quickstart unless package publishing is explicitly approved.
+3. Confirm package.json name, bin, files, version, license, repository, bugs, and homepage fields are correct.
+4. Confirm CI workflow matches the actual package scripts.
+5. Confirm docs/release-notes-v0.1.0.md is ready for GitHub Release.
+6. Confirm docs/promotion-copy.md asks for feedback and never asks for fake, automated, incentivized, or reciprocal stars.
+7. Update docs/metrics-tracker.md with a launch-day checklist and fields for post URLs, stars, visitors, clones, referrers, issues, and comments.
+8. Produce a final report with:
+   - files changed
+   - commands run
+   - verification results
+   - exact manual commands to create the GitHub repo
+   - exact manual commands to create v0.1.0 release
+   - exact promotion posts ready to copy/paste
+   - blockers remaining
+
+Hard rules:
+- Do not fabricate, buy, automate, exchange, or incentivize GitHub stars.
+- Do not use fake accounts, bots, scraped contact lists, mass DMs, or unsolicited GitHub issue/PR comments.
+- Do not post externally without approval.
+- Do not publish to npm without approval.
+- Do not create a GitHub release without approval.
+- Do not commit secrets or tokens.
+```
+
+그다음, 검수가 끝나면 두 번째 Goal로 실제 런칭을 시키면 됩니다.
+
+```text
+/goal
+Launch oss-launch-lint ethically.
+
+Approved actions:
+- Create or update the public GitHub repo if gh authentication is available.
+- Push the main branch.
+- Set repository description and topics.
+- Create v0.1.0 GitHub Release using docs/release-notes-v0.1.0.md.
+- Prepare final copy/paste posts for approved channels.
+
+Not approved:
+- No npm publish unless I explicitly say "approve npm publish".
+- No external social posting unless I explicitly approve the exact post text and channel.
+- No automated starring, fake accounts, reciprocal star requests, mass DMs, scraped outreach, or unsolicited GitHub issue comments.
+
+Success criteria:
+1. Public GitHub repo exists and main branch is pushed.
+2. CI passes on GitHub.
+3. README has working install and quickstart instructions.
+4. v0.1.0 release is created, or exact command is provided if release creation is blocked.
+5. docs/metrics-tracker.md is updated with launch timestamp, release URL, and promotion plan.
+6. Final report includes repo URL, release URL, commands run, checks passed, launch copy, and remaining manual actions.
+```
+
+## 7. 홍보 문구는 이렇게 가는 게 좋습니다
+
+GitHub 정책상 자동화된 과도한 bulk activity, fake accounts, automated inauthentic activity, automated starring/following 같은 rank abuse는 금지되어 있습니다. 그래서 “스타 눌러주세요”보다 “피드백 주세요”가 안전하고 반응도 낫습니다. ([GitHub Docs][4])
+
+### X / Threads / LinkedIn용
+
+```text
+I built oss-launch-lint: a tiny CLI that checks whether a GitHub repo is ready for an open-source launch.
+
+It audits README, license, CI, community files, release prep, and ethical promotion copy, then generates a Markdown/JSON report.
+
+I made it because most small OSS projects fail at the boring launch details, not the code.
+
+Repo:
+https://github.com/YOUR_USERNAME/oss-launch-lint
+
+Would love feedback from maintainers: what should it check next?
+```
+
+### Hacker News / Show HN용
+
+```text
+Show HN: oss-launch-lint – Check if your GitHub repo is ready for an OSS launch
+
+I built a small TypeScript CLI that audits a repo for open-source launch readiness.
+
+It checks things like README gaps, license, CI, community files, release prep, and ethical promotion copy, then outputs a Markdown or JSON report.
+
+I made it for small tools and AI-built side projects where the code exists, but the repo is not actually ready to share.
+
+Repo:
+https://github.com/YOUR_USERNAME/oss-launch-lint
+
+Feedback welcome, especially from maintainers.
+```
+
+### Reddit/dev.to용 짧은 버전
+
+```text
+I built a small CLI for maintainers: oss-launch-lint.
+
+It checks whether a GitHub repo is ready to launch as an open-source project: README, license, CI, community files, release notes, and promotion copy.
+
+The goal is to catch the boring-but-important launch gaps before you post the repo publicly.
+
+Repo:
+https://github.com/YOUR_USERNAME/oss-launch-lint
+
+What checks would you add?
+```
+
+## 8. 16스타를 노리는 운영 순서
+
+오늘 할 일은 이 순서가 제일 좋습니다.
+
+| 순서 | 액션                    | 목적               |
+| -- | --------------------- | ---------------- |
+| 1  | GitHub public repo 생성 | 공유 가능한 URL 확보    |
+| 2  | README 첫 화면 재검수       | 첫 방문자 이탈 방지      |
+| 3  | v0.1.0 Release 생성     | “완성된 프로젝트” 느낌    |
+| 4  | X/LinkedIn 1차 게시      | 지인/개발자 네트워크 노출   |
+| 5  | HN 또는 dev.to 1개 게시    | 외부 개발자 노출        |
+| 6  | 댓글/피드백 2~3시간 대응       | star보다 중요한 신뢰 확보 |
+| 7  | 받은 피드백 1개 바로 반영       | “살아있는 프로젝트” 신호   |
+| 8  | 다음날 업데이트 포스트          | 2차 노출            |
+
+GitHub traffic은 push 권한이 있으면 최근 14일의 visitors, clones, referrers, popular content를 볼 수 있습니다. 런칭 후에는 `Insights → Traffic`을 매일 보고 `docs/metrics-tracker.md`에 어떤 채널이 먹혔는지 기록하세요. ([GitHub Docs][5])
+
+## 9. 내가 보기엔 바로 해야 할 한 가지
+
+**README 설치 문구부터 확인하세요.**
+Codex가 `npm pack --dry-run`까지 했지만 `npm publish`는 안 했다고 했으니, README가 npm 설치를 말하고 있으면 지금 공개 시 첫 유저 경험이 깨질 수 있습니다.
+
+그것만 고치고 나면 바로 push/release/홍보로 넘어가도 됩니다.
+
+[1]: https://cli.github.com/manual/gh_repo_create "GitHub CLI | Take GitHub to the command line"
+[2]: https://cli.github.com/manual/gh_repo_edit "GitHub CLI | Take GitHub to the command line"
+[3]: https://cli.github.com/manual/gh_release_create "GitHub CLI | Take GitHub to the command line"
+[4]: https://docs.github.com/en/site-policy/acceptable-use-policies/github-acceptable-use-policies "GitHub Acceptable Use Policies - GitHub Docs"
+[5]: https://docs.github.com/en/repositories/viewing-activity-and-data-for-your-repository/viewing-traffic-to-a-repository?utm_source=chatgpt.com "Viewing traffic to a repository"

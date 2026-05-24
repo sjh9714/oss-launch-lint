@@ -1,0 +1,55 @@
+{
+  "name": "oss-launch-lint",
+  "version": "0.1.0",
+  "description": "Audit whether a GitHub repo is ready to share: README gaps, community files, CI checks, topic suggestions, release checklist, and ethical launch copy.",
+  "homepage": "https://github.com/sjh9714/oss-launch-lint#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sjh9714/oss-launch-lint.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sjh9714/oss-launch-lint/issues"
+  },
+  "type": "module",
+  "bin": {
+    "oss-launch-lint": "./bin/oss-launch-lint"
+  },
+  "files": [
+    "bin",
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "CODE_OF_CONDUCT.md",
+    "SECURITY.md"
+  ],
+  "scripts": {
+    "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
+    "build": "npm run clean && tsc -p tsconfig.build.json",
+    "lint": "tsc -p tsconfig.json --noEmit",
+    "test": "node --import tsx --test tests/*.test.ts tests/cli/*.test.ts",
+    "smoke": "node bin/oss-launch-lint --help && node bin/oss-launch-lint tests/fixtures/demo-repo --json --no-promotion",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "open-source",
+    "cli",
+    "github",
+    "maintainer-tools",
+    "developer-tools",
+    "readme",
+    "ci",
+    "launch"
+  ],
+  "author": "jinhyuk9714",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.21",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
+  }
+}

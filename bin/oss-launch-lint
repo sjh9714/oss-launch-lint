@@ -1,0 +1,16 @@
+#!/usr/bin/env node
+import { existsSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
+
+const binDir = dirname(fileURLToPath(import.meta.url));
+const compiledCliPath = resolve(binDir, "../dist/cli.js");
+
+if (!existsSync(compiledCliPath)) {
+  console.error("Compiled CLI not found at dist/cli.js. Run `npm run build` first.");
+  process.exitCode = 1;
+} else {
+  const compiledCliUrl = pathToFileURL(compiledCliPath);
+  const { main } = await import(compiledCliUrl.href);
+  process.exitCode = await main();
+}

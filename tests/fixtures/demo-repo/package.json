@@ -1,0 +1,10 @@
+{
+  "name": "demo-launch-repo",
+  "description": "A demo repository for oss-launch-lint tests.",
+  "version": "0.1.0",
+  "license": "MIT",
+  "keywords": ["open-source", "cli", "github"],
+  "scripts": {
+    "test": "node --test"
+  }
+}
