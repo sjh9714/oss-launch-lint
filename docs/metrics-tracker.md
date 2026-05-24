@@ -4,7 +4,7 @@
 
 - Launch timestamp: 2026-05-24 11:33:46 KST / 2026-05-24T02:33:46Z
 - Repository URL: `https://github.com/sjh9714/oss-launch-lint`
-- CI run URL: `https://github.com/sjh9714/oss-launch-lint/actions/runs/26349806058`
+- CI run URL: `https://github.com/sjh9714/oss-launch-lint/actions/runs/26350078673`
 - Release URL: `https://github.com/sjh9714/oss-launch-lint/releases/tag/v0.1.0`
 - Approved channels: none yet
 - External posts performed: none
@@ -19,8 +19,14 @@
 |---|---|---|---|
 | 2026-05-24 | MVP prepared locally |  | No external posting performed. |
 | 2026-05-24 | Public GitHub repository created | https://github.com/sjh9714/oss-launch-lint | `main` pushed. |
-| 2026-05-24 | GitHub Actions CI passed | https://github.com/sjh9714/oss-launch-lint/actions/runs/26349806058 | Tests, lint, build, and smoke check passed. |
+| 2026-05-24 | GitHub Actions CI passed | https://github.com/sjh9714/oss-launch-lint/actions/runs/26350078673 | Latest post-polish CI run passed. |
 | 2026-05-24 | v0.1.0 release published | https://github.com/sjh9714/oss-launch-lint/releases/tag/v0.1.0 | Release created from `docs/release-notes-v0.1.0.md`. |
+
+## Manual promotion intake
+
+- GitHub profile pin: pending user confirmation and optional profile URL.
+- First external post: pending user-provided channel, URL, message variant, stars before, and next action.
+- Traffic data: leave visitors, clones, and referrers blank until GitHub `Insights -> Traffic` data is available.
 
 ## Channel log
 
@@ -53,6 +59,14 @@
 - [x] v0.1.0 release URL is recorded.
 - [ ] Approved posts have URLs recorded above.
 - [ ] GitHub `Insights -> Traffic` visitors, clones, and referrers are copied daily for 7 days.
+
+## 24-hour follow-up checklist
+
+- [ ] Record stars, visitors, clones, referrers, and new issues/comments.
+- [ ] Reply to feedback with useful context or thanks.
+- [ ] Convert repeated questions into README or docs improvements.
+- [ ] Note install friction separately from feature requests.
+- [ ] Decide whether npm `v0.1.1` is worth doing based on install-friction feedback.
 
 ## Interpretation notes
 
