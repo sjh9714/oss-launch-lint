@@ -78,5 +78,5 @@ gh release create v0.1.0 \
 - [ ] Use `docs/promotion-copy.md` as the source.
 - [ ] Tailor each post to the channel.
 - [ ] Ask for feedback first.
-- [ ] Use "Star it if useful" only as a secondary line.
+- [ ] Ask for feedback without pressuring people for engagement.
 - [ ] Record URLs and metrics in `docs/metrics-tracker.md`.

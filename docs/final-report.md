@@ -35,7 +35,7 @@ node bin/oss-launch-lint . --output tmp/self-report.md --promotion-output tmp/se
 
 - Public repository: https://github.com/sjh9714/oss-launch-lint
 - Default branch: `main`
-- CI run: https://github.com/sjh9714/oss-launch-lint/actions/runs/26349772465
+- CI run: https://github.com/sjh9714/oss-launch-lint/actions/runs/26349806058
 - CI result: success
 - Release: https://github.com/sjh9714/oss-launch-lint/releases/tag/v0.1.0
 - Release status: published, not draft, not prerelease
@@ -87,6 +87,6 @@ gh release create v0.1.0 \
 - Any social/community posting.
 - npm package publishing.
 
-## Realistic 16-star expectation
+## Launch expectations
 
-The credible path is targeted feedback, not star manipulation: a clear README, one usable command, v0.1.0 release notes, and a small number of relevant posts to owned accounts or communities that allow project feedback. Sixteen stars in seven days is plausible but not guaranteed; visitors, clones, issues, comments, and feedback quality should be tracked alongside stars.
+The credible path is targeted feedback, not engagement pressure: a clear README, one usable command, v0.1.0 release notes, and a small number of relevant posts to owned accounts or communities that allow project feedback. Track visitors, clones, issues, comments, install friction, and feedback quality alongside any GitHub stars.

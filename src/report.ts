@@ -42,7 +42,7 @@ export function renderMarkdownReport(result: AuditResult): string {
     "",
     "## Ethical launch note",
     "",
-    "Ask for feedback first. A secondary line such as \"Star it if useful\" is acceptable, but do not buy, automate, exchange, or incentivize stars.",
+    "Ask for feedback first. Do not buy, automate, exchange, incentivize, or pressure people for stars.",
     ""
   ].join("\n");
 }

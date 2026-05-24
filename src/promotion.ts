@@ -33,7 +33,6 @@ export function renderPromotionCopy(input: PromotionInput): string {
     "It checks README gaps, missing community files, CI/test setup, topic suggestions, and release readiness.",
     "",
     `Feedback welcome from OSS maintainers: ${repoUrl}`,
-    "Star it if useful.",
     "",
     "## LinkedIn",
     "",

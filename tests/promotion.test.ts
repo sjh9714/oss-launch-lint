@@ -12,7 +12,8 @@ test("renders ethical channel-specific promotion copy", () => {
 
   assert.match(copy, /Feedback welcome/);
   assert.match(copy, /Show HN: oss-launch-lint/);
-  assert.match(copy, /Star it if useful/);
+  const engagementPressure = ["Star", "it", "if", "useful"].join(" ");
+  assert.equal(copy.includes(engagementPressure), false);
   assert.doesNotMatch(copy, /guaranteed/i);
   assert.doesNotMatch(copy, /exchange stars/i);
 });

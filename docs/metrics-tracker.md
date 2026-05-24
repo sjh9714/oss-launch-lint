@@ -4,7 +4,7 @@
 
 - Launch timestamp: 2026-05-24 11:33:46 KST / 2026-05-24T02:33:46Z
 - Repository URL: `https://github.com/sjh9714/oss-launch-lint`
-- CI run URL: `https://github.com/sjh9714/oss-launch-lint/actions/runs/26349772465`
+- CI run URL: `https://github.com/sjh9714/oss-launch-lint/actions/runs/26349806058`
 - Release URL: `https://github.com/sjh9714/oss-launch-lint/releases/tag/v0.1.0`
 - Approved channels: none yet
 - External posts performed: none
@@ -19,7 +19,7 @@
 |---|---|---|---|
 | 2026-05-24 | MVP prepared locally |  | No external posting performed. |
 | 2026-05-24 | Public GitHub repository created | https://github.com/sjh9714/oss-launch-lint | `main` pushed. |
-| 2026-05-24 | GitHub Actions CI passed | https://github.com/sjh9714/oss-launch-lint/actions/runs/26349772465 | Tests, lint, build, and smoke check passed. |
+| 2026-05-24 | GitHub Actions CI passed | https://github.com/sjh9714/oss-launch-lint/actions/runs/26349806058 | Tests, lint, build, and smoke check passed. |
 | 2026-05-24 | v0.1.0 release published | https://github.com/sjh9714/oss-launch-lint/releases/tag/v0.1.0 | Release created from `docs/release-notes-v0.1.0.md`. |
 
 ## Channel log

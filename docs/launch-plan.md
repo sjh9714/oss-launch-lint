@@ -2,7 +2,7 @@
 
 ## Principle
 
-The goal is to ship a useful maintainer tool, put it in front of the right people, ask for feedback, and make it easy for people to star only if they find it useful.
+The goal is to ship a useful maintainer tool, put it in front of the right people, ask for feedback, and improve the repo based on what real users find confusing.
 
 ## Day 0 - Build the shareable MVP
 
@@ -53,11 +53,11 @@ The goal is to ship a useful maintainer tool, put it in front of the right peopl
 - Identify the highest-signal channel.
 - Decide whether to keep investing, write a technical deep dive, or pivot the checks.
 
-## Realistic 16-star path
+## Realistic launch path
 
-- 5-8 from warm developers who inspect the repo.
-- 3-5 from one relevant community post.
-- 3-5 from social or article visibility.
-- 1-3 from GitHub discovery, profile pinning, or follow-up improvements.
+- Share first with a few developers who maintain or publish small repos.
+- Post to one owned social account with a feedback request.
+- Post to one relevant community only if project feedback posts are allowed.
+- Ship one small improvement based on early feedback.
 
-This is not guaranteed. Stars are an outcome metric, not something to manipulate.
+Stars are a lagging signal. Treat feedback quality, visitors, clones, issues, comments, and install success as the main launch signals.
