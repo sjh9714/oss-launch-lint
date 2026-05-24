@@ -6,8 +6,8 @@
 - Repository URL: `https://github.com/sjh9714/oss-launch-lint`
 - CI run URL: `https://github.com/sjh9714/oss-launch-lint/actions/runs/26350078673`
 - Release URL: `https://github.com/sjh9714/oss-launch-lint/releases/tag/v0.1.0`
-- Approved channels: none yet
-- External posts performed: none
+- Approved channels: X, Threads, Bluesky
+- External posts performed: X, Threads, Bluesky
 - Initial stars: 0
 - Initial forks: 0
 - Initial watchers: 0
@@ -21,11 +21,12 @@
 | 2026-05-24 | Public GitHub repository created | https://github.com/sjh9714/oss-launch-lint | `main` pushed. |
 | 2026-05-24 | GitHub Actions CI passed | https://github.com/sjh9714/oss-launch-lint/actions/runs/26350078673 | Latest post-polish CI run passed. |
 | 2026-05-24 | v0.1.0 release published | https://github.com/sjh9714/oss-launch-lint/releases/tag/v0.1.0 | Release created from `docs/release-notes-v0.1.0.md`. |
+| 2026-05-24 | First feedback posts published | https://x.com/jinhyuk9714/status/2058409016863428731 | Published feedback-first posts to X, Threads, and Bluesky. |
 
 ## Manual promotion intake
 
 - GitHub profile pin: pending user confirmation and optional profile URL.
-- First external post: pending user-provided channel, URL, message variant, stars before, and next action.
+- First external posts: recorded for X, Threads, and Bluesky.
 - Traffic data: leave visitors, clones, and referrers blank until GitHub `Insights -> Traffic` data is available.
 
 ## Channel log
@@ -33,7 +34,9 @@
 | Date | Channel | Post URL | Message variant | Stars before | Stars after 24h | Visitors | Clones | Referrers | Comments/issues | Notes | Next action |
 |---|---|---|---|---:|---:|---:|---:|---|---|---|---|
 | YYYY-MM-DD | GitHub profile pin |  |  | 0 |  |  |  |  |  |  |  |
-| YYYY-MM-DD | X/Mastodon/Bluesky |  |  | 0 |  |  |  |  |  |  |  |
+| 2026-05-24 | X | https://x.com/jinhyuk9714/status/2058409016863428731 | Short feedback request | 0 |  |  |  |  |  | Browser-use verified post URL opens and includes the repo link. | Check 24-hour metrics and reply to feedback. |
+| 2026-05-24 | Threads | https://www.threads.com/@sunjay_vo/post/DYtWXE3Efzs | X / Mastodon / Bluesky default | 0 |  |  |  |  |  | Browser-use verified post URL opens and includes the repo link. | Check 24-hour metrics and reply to feedback. |
+| 2026-05-24 | Bluesky | https://bsky.app/profile/sjh9714.bsky.social/post/3mml6pictzc24 | Short feedback request | 0 |  |  |  |  |  | Browser-use verified post URL opens after posting from logged-in Safari session. | Check 24-hour metrics and reply to feedback. |
 | YYYY-MM-DD | LinkedIn |  |  | 0 |  |  |  |  |  |  |  |
 | YYYY-MM-DD | dev.to/blog |  |  | 0 |  |  |  |  |  |  |  |
 | YYYY-MM-DD | Community post |  |  | 0 |  |  |  |  |  |  |  |
