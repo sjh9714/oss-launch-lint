@@ -2,10 +2,10 @@
 
 ## Baseline
 
-- Launch timestamp: pending
+- Launch timestamp: 2026-05-24 11:33:46 KST / 2026-05-24T02:33:46Z
 - Repository URL: `https://github.com/sjh9714/oss-launch-lint`
-- CI run URL: pending
-- Release URL: pending
+- CI run URL: `https://github.com/sjh9714/oss-launch-lint/actions/runs/26349772465`
+- Release URL: `https://github.com/sjh9714/oss-launch-lint/releases/tag/v0.1.0`
 - Approved channels: none yet
 - External posts performed: none
 - Initial stars: 0
@@ -18,6 +18,9 @@
 | Date | Event | URL | Notes |
 |---|---|---|---|
 | 2026-05-24 | MVP prepared locally |  | No external posting performed. |
+| 2026-05-24 | Public GitHub repository created | https://github.com/sjh9714/oss-launch-lint | `main` pushed. |
+| 2026-05-24 | GitHub Actions CI passed | https://github.com/sjh9714/oss-launch-lint/actions/runs/26349772465 | Tests, lint, build, and smoke check passed. |
+| 2026-05-24 | v0.1.0 release published | https://github.com/sjh9714/oss-launch-lint/releases/tag/v0.1.0 | Release created from `docs/release-notes-v0.1.0.md`. |
 
 ## Channel log
 
@@ -33,7 +36,7 @@
 
 | Date | Stars | Unique visitors | Clones | Issues/PRs | What changed today | Lesson |
 |---|---:|---:|---:|---:|---|---|
-| Day 0 | 0 |  |  |  | Repo prepared |  |
+| Day 0 | 0 |  |  |  | Repo published, CI passed, v0.1.0 released | Promotion not posted yet. |
 | Day 1 |  |  |  |  |  |  |
 | Day 2 |  |  |  |  |  |  |
 | Day 3 |  |  |  |  |  |  |
@@ -44,10 +47,10 @@
 
 ## Launch-day checklist
 
-- [ ] Public GitHub repository exists at `https://github.com/sjh9714/oss-launch-lint`.
-- [ ] Main branch is pushed.
-- [ ] GitHub Actions CI passes.
-- [ ] v0.1.0 release URL is recorded.
+- [x] Public GitHub repository exists at `https://github.com/sjh9714/oss-launch-lint`.
+- [x] Main branch is pushed.
+- [x] GitHub Actions CI passes.
+- [x] v0.1.0 release URL is recorded.
 - [ ] Approved posts have URLs recorded above.
 - [ ] GitHub `Insights -> Traffic` visitors, clones, and referrers are copied daily for 7 days.
 

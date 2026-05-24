@@ -28,17 +28,22 @@ node bin/oss-launch-lint . --output tmp/self-report.md --promotion-output tmp/se
 - `npm run lint`: TypeScript check passed.
 - `npm run build`: compiled runtime files into `dist/`.
 - `npm run smoke`: built bin printed help and audited the demo fixture as 100/100.
-- `npm pack --dry-run`: package dry-run should include runtime files, README, license, changelog, contributing guide, code of conduct, and security policy.
-- Self-audit: this repo should score 100/100 after build.
+- `npm pack --dry-run`: package dry-run included runtime files, README, license, changelog, contributing guide, code of conduct, and security policy.
+- Self-audit: this repo scored 100/100 after build.
 
-## Manual GitHub launch commands
+## GitHub launch results
 
-Run only after approving public repository creation:
+- Public repository: https://github.com/sjh9714/oss-launch-lint
+- Default branch: `main`
+- CI run: https://github.com/sjh9714/oss-launch-lint/actions/runs/26349772465
+- CI result: success
+- Release: https://github.com/sjh9714/oss-launch-lint/releases/tag/v0.1.0
+- Release status: published, not draft, not prerelease
+
+## GitHub launch commands used
 
 ```bash
-git switch main
-
-gh repo create oss-launch-lint \
+gh repo create sjh9714/oss-launch-lint \
   --public \
   --source=. \
   --remote=origin \
@@ -46,35 +51,28 @@ gh repo create oss-launch-lint \
   --description "Audit whether a GitHub repo is ready for an ethical open-source launch."
 
 gh repo edit sjh9714/oss-launch-lint \
-  --description "Audit whether your GitHub repo is ready to share: README gaps, community files, CI checks, topics, checklist, and launch copy." \
+  --description "Audit whether a GitHub repo is ready for an ethical open-source launch." \
   --homepage "https://github.com/sjh9714/oss-launch-lint" \
   --enable-issues=true \
   --enable-wiki=false \
   --add-topic open-source \
   --add-topic cli \
   --add-topic github \
-  --add-topic maintainer-tools \
   --add-topic developer-tools \
-  --add-topic readme \
-  --add-topic ci \
-  --add-topic launch \
+  --add-topic maintainer-tools \
   --add-topic typescript \
-  --add-topic nodejs \
-  --add-topic docs \
-  --add-topic productivity
-```
+  --add-topic oss \
+  --add-topic release-checklist \
+  --add-topic launch
 
-## Manual v0.1.0 release commands
-
-Run only after approving release creation and confirming GitHub CI passes:
-
-```bash
 git tag -a v0.1.0 -m "v0.1.0"
 git push origin v0.1.0
 
 gh release create v0.1.0 \
+  --repo sjh9714/oss-launch-lint \
   --title "oss-launch-lint v0.1.0" \
-  --notes-file docs/release-notes-v0.1.0.md
+  --notes-file docs/release-notes-v0.1.0.md \
+  --verify-tag
 ```
 
 ## Promotion status
@@ -86,9 +84,6 @@ gh release create v0.1.0 \
 
 ## Remaining approval-only blockers
 
-- Public GitHub repository creation and push.
-- GitHub CI run URL after push.
-- v0.1.0 GitHub release creation.
 - Any social/community posting.
 - npm package publishing.
 
