@@ -49,7 +49,7 @@ The task is complete only when all of these are true, or a blocker is reported c
 - Keep the tool useful even if it never receives stars.
 
 ## Work loop
-1. Read this file, `PROJECT_BRIEF.md`, `LAUNCH_PLAN.md`, and any existing repository files.
+1. Read this file, `README.md`, `docs/launch-plan.md`, `docs/promotion-copy.md`, `docs/metrics-tracker.md`, and any existing repository files.
 2. Propose a short plan and select the smallest shippable MVP.
 3. Implement in focused increments.
 4. Run tests, linting, and any relevant build commands.
