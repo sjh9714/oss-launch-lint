@@ -15,18 +15,18 @@ const result: AuditResult = {
       title: "README",
       status: "pass",
       message: "README explains the project.",
-      recommendation: "Keep the first screen concrete."
+      recommendation: "Keep the first screen concrete.",
     },
     {
       id: "license",
       title: "License",
       status: "fail",
       message: "LICENSE is missing.",
-      recommendation: "Add an OSI-approved license."
-    }
+      recommendation: "Add an OSI-approved license.",
+    },
   ],
   topics: ["open-source", "cli", "github"],
-  nextActions: ["Add LICENSE before launch."]
+  nextActions: ["Add LICENSE before launch."],
 };
 
 test("renders a Markdown report with score, checks, topics, and release checklist", () => {
@@ -47,7 +47,7 @@ test("renders JSON matching the documented public shape", () => {
     "nextActions",
     "score",
     "summary",
-    "topics"
+    "topics",
   ]);
   assert.equal(json.score, 82);
   assert.deepEqual(json.summary, { pass: 8, warn: 2, fail: 1 });

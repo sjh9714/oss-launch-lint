@@ -22,6 +22,7 @@ The tool should stay useful, truthful, and non-spammy. It should help users impr
 - A new user should understand the project in 20 seconds.
 - A new user should be able to run the first useful command within 2 minutes.
 - Prefer a tiny, complete, reliable MVP over a broad unfinished one.
+- Keep source, docs, and package metadata formatted enough that visitors can trust the repository at a glance.
 - Add tests for core audit, report, CLI, and promotion-copy behavior.
 - Keep generated promotion copy feedback-oriented and community-rule-aware.
 

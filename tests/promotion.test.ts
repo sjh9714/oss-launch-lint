@@ -7,7 +7,7 @@ test("renders ethical channel-specific promotion copy", () => {
   const copy = renderPromotionCopy({
     repoName: "oss-launch-lint",
     repoUrl: "https://github.com/example/oss-launch-lint",
-    topics: ["open-source", "cli", "github"]
+    topics: ["open-source", "cli", "github"],
   });
 
   assert.match(copy, /Feedback welcome/);
