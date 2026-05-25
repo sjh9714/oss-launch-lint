@@ -9,36 +9,36 @@ const REQUIRED_FILES = [
     title: "License",
     files: ["LICENSE", "LICENSE.md", "COPYING"],
     missing: "LICENSE is missing.",
-    recommendation: "Add LICENSE before launch so visitors know how they can use the project."
+    recommendation: "Add LICENSE before launch so visitors know how they can use the project.",
   },
   {
     id: "contributing",
     title: "Contributing guide",
     files: ["CONTRIBUTING.md", ".github/CONTRIBUTING.md"],
     missing: "CONTRIBUTING.md is missing.",
-    recommendation: "Add CONTRIBUTING.md with setup, test, and pull request guidance."
+    recommendation: "Add CONTRIBUTING.md with setup, test, and pull request guidance.",
   },
   {
     id: "code-of-conduct",
     title: "Code of conduct",
     files: ["CODE_OF_CONDUCT.md", ".github/CODE_OF_CONDUCT.md"],
     missing: "CODE_OF_CONDUCT.md is missing.",
-    recommendation: "Add CODE_OF_CONDUCT.md to set participation expectations."
+    recommendation: "Add CODE_OF_CONDUCT.md to set participation expectations.",
   },
   {
     id: "security",
     title: "Security policy",
     files: ["SECURITY.md", ".github/SECURITY.md"],
     missing: "SECURITY.md is missing.",
-    recommendation: "Add SECURITY.md with private vulnerability reporting instructions."
+    recommendation: "Add SECURITY.md with private vulnerability reporting instructions.",
   },
   {
     id: "changelog",
     title: "Changelog",
     files: ["CHANGELOG.md", "HISTORY.md", "RELEASES.md"],
     missing: "CHANGELOG.md is missing.",
-    recommendation: "Add CHANGELOG.md and start it with the first public release."
-  }
+    recommendation: "Add CHANGELOG.md and start it with the first public release.",
+  },
 ];
 
 const README_SECTIONS = [
@@ -47,7 +47,7 @@ const README_SECTIONS = [
   { label: "example output", pattern: /\b(example|output|demo)\b/i },
   { label: "roadmap", pattern: /\broadmap\b/i },
   { label: "contributing", pattern: /\bcontribut/i },
-  { label: "support", pattern: /\b(support|help|questions)\b/i }
+  { label: "support", pattern: /\b(support|help|questions)\b/i },
 ];
 
 const TOPIC_LIMIT = 12;
@@ -70,7 +70,7 @@ export async function auditRepository(repoPath: string): Promise<AuditResult> {
     checkCi(lowerFiles, ciWorkflowContents),
     checkIssueTemplates(lowerFiles),
     checkPackageMetadata(packageJson),
-    checkTestScript(packageJson)
+    checkTestScript(packageJson),
   ];
 
   const summary = summarize(checks);
@@ -85,7 +85,7 @@ export async function auditRepository(repoPath: string): Promise<AuditResult> {
     summary,
     checks,
     topics,
-    nextActions
+    nextActions,
   };
 }
 
@@ -134,13 +134,14 @@ function checkReadme(readmePath: string | undefined, readme: string): AuditCheck
       title: "README",
       status: "fail",
       message: "README.md is missing.",
-      recommendation: "Add README.md with the project value proposition, install command, quickstart, example output, roadmap, support, and contribution notes."
+      recommendation:
+        "Add README.md with the project value proposition, install command, quickstart, example output, roadmap, support, and contribution notes.",
     };
   }
 
-  const missingSections = README_SECTIONS
-    .filter((section) => !section.pattern.test(readme))
-    .map((section) => section.label);
+  const missingSections = README_SECTIONS.filter((section) => !section.pattern.test(readme)).map(
+    (section) => section.label,
+  );
 
   if (readme.trim().length < 250 || missingSections.length >= 3) {
     return {
@@ -148,7 +149,8 @@ function checkReadme(readmePath: string | undefined, readme: string): AuditCheck
       title: "README",
       status: "warn",
       message: `README exists but is missing launch-critical sections: ${missingSections.join(", ") || "more detail"}.`,
-      recommendation: "Make the first screen answer what it does, who it helps, how to install it, and what output to expect."
+      recommendation:
+        "Make the first screen answer what it does, who it helps, how to install it, and what output to expect.",
     };
   }
 
@@ -158,7 +160,7 @@ function checkReadme(readmePath: string | undefined, readme: string): AuditCheck
       title: "README",
       status: "warn",
       message: `README is present but could be clearer. Missing: ${missingSections.join(", ")}.`,
-      recommendation: "Add the missing README sections before a public launch."
+      recommendation: "Add the missing README sections before a public launch.",
     };
   }
 
@@ -167,7 +169,7 @@ function checkReadme(readmePath: string | undefined, readme: string): AuditCheck
     title: "README",
     status: "pass",
     message: "README includes the main onboarding sections.",
-    recommendation: "Keep the first screen concrete and copy-paste friendly."
+    recommendation: "Keep the first screen concrete and copy-paste friendly.",
   };
 }
 
@@ -179,7 +181,7 @@ function checkRequiredFile(
     files: string[];
     missing: string;
     recommendation: string;
-  }
+  },
 ): AuditCheck {
   const found = findFirst(fileMap, item.files);
 
@@ -189,7 +191,7 @@ function checkRequiredFile(
       title: item.title,
       status: "fail",
       message: item.missing,
-      recommendation: item.recommendation
+      recommendation: item.recommendation,
     };
   }
 
@@ -197,12 +199,15 @@ function checkRequiredFile(
     id: item.id,
     title: item.title,
     status: "pass",
-    message: `${item.title} found at ${found}.`
+    message: `${item.title} found at ${found}.`,
   };
 }
 
 function checkCi(lowerFiles: Set<string>, workflowContents: string): AuditCheck {
-  const hasCi = [...lowerFiles].some((file) => file.startsWith(".github/workflows/") && (file.endsWith(".yml") || file.endsWith(".yaml")));
+  const hasCi = [...lowerFiles].some(
+    (file) =>
+      file.startsWith(".github/workflows/") && (file.endsWith(".yml") || file.endsWith(".yaml")),
+  );
 
   if (!hasCi) {
     return {
@@ -210,7 +215,8 @@ function checkCi(lowerFiles: Set<string>, workflowContents: string): AuditCheck 
       title: "Continuous integration",
       status: "fail",
       message: "No GitHub Actions workflow found.",
-      recommendation: "Add .github/workflows/ci.yml that runs lint, tests, and build on pull requests."
+      recommendation:
+        "Add .github/workflows/ci.yml that runs lint, tests, and build on pull requests.",
     };
   }
 
@@ -219,8 +225,10 @@ function checkCi(lowerFiles: Set<string>, workflowContents: string): AuditCheck 
       id: "ci",
       title: "Continuous integration",
       status: "warn",
-      message: "A GitHub Actions workflow exists but does not appear to run tests, lint, build, or a comparable check.",
-      recommendation: "Add at least one meaningful CI command such as npm test, npm run lint, npm run build, pytest, cargo test, go test, or dotnet test."
+      message:
+        "A GitHub Actions workflow exists but does not appear to run tests, lint, build, or a comparable check.",
+      recommendation:
+        "Add at least one meaningful CI command such as npm test, npm run lint, npm run build, pytest, cargo test, go test, or dotnet test.",
     };
   }
 
@@ -228,7 +236,7 @@ function checkCi(lowerFiles: Set<string>, workflowContents: string): AuditCheck 
     id: "ci",
     title: "Continuous integration",
     status: "pass",
-    message: "GitHub Actions workflow found with a meaningful verification command."
+    message: "GitHub Actions workflow found with a meaningful verification command.",
   };
 }
 
@@ -240,14 +248,15 @@ function checkIssueTemplates(lowerFiles: Set<string>): AuditCheck {
         id: "issue-template",
         title: "Issue templates",
         status: "pass",
-        message: "Issue template found."
+        message: "Issue template found.",
       }
     : {
         id: "issue-template",
         title: "Issue templates",
         status: "fail",
         message: "No issue templates found.",
-        recommendation: "Add .github/ISSUE_TEMPLATE/bug_report.md and feature_request.md to make feedback easier."
+        recommendation:
+          "Add .github/ISSUE_TEMPLATE/bug_report.md and feature_request.md to make feedback easier.",
       };
 }
 
@@ -258,11 +267,14 @@ function checkPackageMetadata(packageJson: Record<string, unknown> | undefined):
       title: "Package metadata",
       status: "warn",
       message: "No package.json found.",
-      recommendation: "If this repo is publishable, add package metadata with name, description, keywords, license, and scripts."
+      recommendation:
+        "If this repo is publishable, add package metadata with name, description, keywords, license, and scripts.",
     };
   }
 
-  const missing = ["name", "description", "license"].filter((field) => !hasString(packageJson[field]));
+  const missing = ["name", "description", "license"].filter(
+    (field) => !hasString(packageJson[field]),
+  );
   const keywords = packageJson.keywords;
   if (!Array.isArray(keywords) || keywords.length === 0) {
     missing.push("keywords");
@@ -274,7 +286,8 @@ function checkPackageMetadata(packageJson: Record<string, unknown> | undefined):
       title: "Package metadata",
       status: "warn",
       message: `package.json is missing useful launch metadata: ${missing.join(", ")}.`,
-      recommendation: "Fill in package name, description, license, and keywords so npm/GitHub previews are useful."
+      recommendation:
+        "Fill in package name, description, license, and keywords so npm/GitHub previews are useful.",
     };
   }
 
@@ -282,7 +295,7 @@ function checkPackageMetadata(packageJson: Record<string, unknown> | undefined):
     id: "package-metadata",
     title: "Package metadata",
     status: "pass",
-    message: "package.json includes launch metadata."
+    message: "package.json includes launch metadata.",
   };
 }
 
@@ -296,7 +309,7 @@ function checkTestScript(packageJson: Record<string, unknown> | undefined): Audi
       title: "Test command",
       status: "fail",
       message: "No package test script found.",
-      recommendation: "Add a test command and document it in README."
+      recommendation: "Add a test command and document it in README.",
     };
   }
 
@@ -304,7 +317,7 @@ function checkTestScript(packageJson: Record<string, unknown> | undefined): Audi
     id: "test-script",
     title: "Test command",
     status: "pass",
-    message: `Test script found: ${testScript}`
+    message: `Test script found: ${testScript}`,
   };
 }
 
@@ -314,7 +327,7 @@ function summarize(checks: AuditCheck[]): AuditSummary {
       summary[check.status] += 1;
       return summary;
     },
-    { pass: 0, warn: 0, fail: 0 }
+    { pass: 0, warn: 0, fail: 0 },
   );
 }
 
@@ -342,7 +355,7 @@ function buildNextActions(checks: AuditCheck[]): string[] {
 
   if (actions.length === 0) {
     return [
-      "Create v0.1.0 release notes and share the project with a small group of relevant maintainers for feedback."
+      "Create release notes and share the project with a small group of relevant maintainers for feedback.",
     ];
   }
 
@@ -352,7 +365,7 @@ function buildNextActions(checks: AuditCheck[]): string[] {
 function suggestTopics(
   files: string[],
   readme: string,
-  packageJson: Record<string, unknown> | undefined
+  packageJson: Record<string, unknown> | undefined,
 ): string[] {
   const topics = new Set<string>(["open-source", "github", "developer-tools"]);
   const lowerReadme = readme.toLowerCase();
@@ -371,7 +384,9 @@ function suggestTopics(
     topics.add("cli");
   }
 
-  if (files.some((file) => file.endsWith(".js") || file.endsWith(".mjs") || file.endsWith(".cjs"))) {
+  if (
+    files.some((file) => file.endsWith(".js") || file.endsWith(".mjs") || file.endsWith(".cjs"))
+  ) {
     topics.add("javascript");
   }
 
@@ -419,7 +434,9 @@ async function readPackageJson(root: string): Promise<Record<string, unknown> | 
 async function readCiWorkflowContents(root: string, files: string[]): Promise<string> {
   const workflowFiles = files.filter((file) => {
     const lower = file.toLowerCase();
-    return lower.startsWith(".github/workflows/") && (lower.endsWith(".yml") || lower.endsWith(".yaml"));
+    return (
+      lower.startsWith(".github/workflows/") && (lower.endsWith(".yml") || lower.endsWith(".yaml"))
+    );
   });
 
   const contents = await Promise.all(workflowFiles.map((file) => readTextIfPresent(root, file)));
@@ -435,7 +452,9 @@ async function readTextIfPresent(root: string, relativePath: string): Promise<st
 }
 
 function findFirst(fileMap: Map<string, string>, candidates: string[]): string | undefined {
-  const key = candidates.map((candidate) => normalizePath(candidate).toLowerCase()).find((candidate) => fileMap.has(candidate));
+  const key = candidates
+    .map((candidate) => normalizePath(candidate).toLowerCase())
+    .find((candidate) => fileMap.has(candidate));
   return key ? fileMap.get(key) : undefined;
 }
 
@@ -452,10 +471,18 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function slugTopic(value: string): string {
-  return value.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
 }
 
 function hasMeaningfulCiCommand(contents: string): boolean {
-  return /\b(npm|pnpm|yarn)\s+(run\s+)?(test|lint|build)\b/i.test(contents)
-    || /\b(pytest|cargo\s+test|go\s+test|dotnet\s+test|bundle\s+exec\s+rspec|mix\s+test)\b/i.test(contents);
+  return (
+    /\b(npm|pnpm|yarn)\s+(run\s+)?(test|lint|build)\b/i.test(contents) ||
+    /\b(pytest|cargo\s+test|go\s+test|dotnet\s+test|bundle\s+exec\s+rspec|mix\s+test)\b/i.test(
+      contents,
+    )
+  );
 }

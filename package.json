@@ -12,7 +12,7 @@
   },
   "type": "module",
   "bin": {
-    "oss-launch-lint": "./bin/oss-launch-lint"
+    "oss-launch-lint": "bin/oss-launch-lint"
   },
   "files": [
     "bin",
@@ -22,7 +22,8 @@
     "CHANGELOG.md",
     "CONTRIBUTING.md",
     "CODE_OF_CONDUCT.md",
-    "SECURITY.md"
+    "SECURITY.md",
+    "docs/github-actions.md"
   ],
   "scripts": {
     "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
@@ -30,7 +31,9 @@
     "lint": "tsc -p tsconfig.json --noEmit",
     "test": "node --import tsx --test tests/*.test.ts tests/cli/*.test.ts",
     "smoke": "node bin/oss-launch-lint --help && node bin/oss-launch-lint tests/fixtures/demo-repo --json --no-promotion",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "format": "prettier --ignore-unknown --write \"src/**/*.ts\" \"tests/**/*.ts\" \"bin/*\" \"package*.json\" \"tsconfig*.json\" \"README.md\" \"AGENTS.md\" \"CHANGELOG.md\" \"CODE_OF_CONDUCT.md\" \"CONTRIBUTING.md\" \"SECURITY.md\" \"docs/**/*.md\" \".github/**/*.{yml,yaml,md}\" \".prettierrc\" \".prettierignore\"",
+    "format:check": "prettier --ignore-unknown --check \"src/**/*.ts\" \"tests/**/*.ts\" \"bin/*\" \"package*.json\" \"tsconfig*.json\" \"README.md\" \"AGENTS.md\" \"CHANGELOG.md\" \"CODE_OF_CONDUCT.md\" \"CONTRIBUTING.md\" \"SECURITY.md\" \"docs/**/*.md\" \".github/**/*.{yml,yaml,md}\" \".prettierrc\" \".prettierignore\""
   },
   "keywords": [
     "open-source",
@@ -40,7 +43,9 @@
     "developer-tools",
     "readme",
     "ci",
-    "launch"
+    "launch",
+    "github-actions",
+    "quality-gate"
   ],
   "author": "jinhyuk9714",
   "license": "MIT",
@@ -49,6 +54,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.15.21",
+    "prettier": "^3.8.3",
     "tsx": "^4.19.4",
     "typescript": "^5.8.3"
   }

@@ -2,6 +2,8 @@
 
 Check community rules before posting. Do not post externally until the exact text and destination are approved.
 
+Current priority after the first feedback posts: improve the product and developer experience before additional broad promotion. Treat the drafts below as reusable copy for approved follow-up posts, not as an instruction to post now.
+
 ## Repository URL
 
 `https://github.com/sjh9714/oss-launch-lint`
@@ -96,3 +98,39 @@ What checks would you add?
 ```
 
 Only post this in communities where project feedback posts are allowed. If the rules are unclear, ask moderators first or do not post.
+
+## Follow-up after npm availability
+
+```text
+Updated oss-launch-lint so it now runs with one command:
+
+npx oss-launch-lint@latest .
+
+It checks whether a GitHub repo is ready to share: README clarity, install instructions, license, CI, issue templates, package metadata, release prep, topic suggestions, and ethical promotion copy.
+
+Repo:
+https://github.com/sjh9714/oss-launch-lint
+
+I’m working on safer scaffold/fix flows next. What launch-readiness checks would you add?
+```
+
+Use this only after the package is actually published to npm.
+
+## Follow-up after --fix mode
+
+```text
+I added --fix mode to oss-launch-lint.
+
+Now you can preview missing OSS launch files before writing anything:
+
+npx oss-launch-lint@latest . --fix --dry-run
+
+It can scaffold missing community files, issue templates, changelog, security policy, and a launch-readiness workflow without overwriting existing files.
+
+Repo:
+https://github.com/sjh9714/oss-launch-lint
+
+Feedback welcome from maintainers.
+```
+
+Use this only after npm availability is true or rewrite the command to use the source-checkout path.

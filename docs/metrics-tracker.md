@@ -15,13 +15,13 @@
 
 ## Launch log
 
-| Date | Event | URL | Notes |
-|---|---|---|---|
-| 2026-05-24 | MVP prepared locally |  | No external posting performed. |
-| 2026-05-24 | Public GitHub repository created | https://github.com/sjh9714/oss-launch-lint | `main` pushed. |
-| 2026-05-24 | GitHub Actions CI passed | https://github.com/sjh9714/oss-launch-lint/actions/runs/26350078673 | Latest post-polish CI run passed. |
-| 2026-05-24 | v0.1.0 release published | https://github.com/sjh9714/oss-launch-lint/releases/tag/v0.1.0 | Release created from `docs/release-notes-v0.1.0.md`. |
-| 2026-05-24 | First feedback posts published | https://x.com/jinhyuk9714/status/2058409016863428731 | Published feedback-first posts to X, Threads, and Bluesky. |
+| Date       | Event                            | URL                                                                 | Notes                                                      |
+| ---------- | -------------------------------- | ------------------------------------------------------------------- | ---------------------------------------------------------- |
+| 2026-05-24 | MVP prepared locally             |                                                                     | No external posting performed.                             |
+| 2026-05-24 | Public GitHub repository created | https://github.com/sjh9714/oss-launch-lint                          | `main` pushed.                                             |
+| 2026-05-24 | GitHub Actions CI passed         | https://github.com/sjh9714/oss-launch-lint/actions/runs/26350078673 | Latest post-polish CI run passed.                          |
+| 2026-05-24 | v0.1.0 release published         | https://github.com/sjh9714/oss-launch-lint/releases/tag/v0.1.0      | Release created from `docs/release-notes-v0.1.0.md`.       |
+| 2026-05-24 | First feedback posts published   | https://x.com/jinhyuk9714/status/2058409016863428731                | Published feedback-first posts to X, Threads, and Bluesky. |
 
 ## Manual promotion intake
 
@@ -31,28 +31,28 @@
 
 ## Channel log
 
-| Date | Channel | Post URL | Message variant | Stars before | Stars after 24h | Visitors | Clones | Referrers | Comments/issues | Notes | Next action |
-|---|---|---|---|---:|---:|---:|---:|---|---|---|---|
-| YYYY-MM-DD | GitHub profile pin |  |  | 0 |  |  |  |  |  |  |  |
-| 2026-05-24 | X | https://x.com/jinhyuk9714/status/2058409016863428731 | Short feedback request | 0 |  |  |  |  |  | Browser-use verified post URL opens and includes the repo link. | Check 24-hour metrics and reply to feedback. |
-| 2026-05-24 | Threads | https://www.threads.com/@sunjay_vo/post/DYtWXE3Efzs | X / Mastodon / Bluesky default | 0 |  |  |  |  |  | Browser-use verified post URL opens and includes the repo link. | Check 24-hour metrics and reply to feedback. |
-| 2026-05-24 | Bluesky | https://bsky.app/profile/sjh9714.bsky.social/post/3mml6pictzc24 | Short feedback request | 0 |  |  |  |  |  | Browser-use verified post URL opens after posting from logged-in Safari session. | Check 24-hour metrics and reply to feedback. |
-| YYYY-MM-DD | LinkedIn |  |  | 0 |  |  |  |  |  |  |  |
-| YYYY-MM-DD | dev.to/blog |  |  | 0 |  |  |  |  |  |  |  |
-| YYYY-MM-DD | Community post |  |  | 0 |  |  |  |  |  |  |  |
+| Date       | Channel            | Post URL                                                        | Message variant                | Stars before | Stars after 24h | Visitors | Clones | Referrers | Comments/issues | Notes                                                                            | Next action                                  |
+| ---------- | ------------------ | --------------------------------------------------------------- | ------------------------------ | -----------: | --------------: | -------: | -----: | --------- | --------------- | -------------------------------------------------------------------------------- | -------------------------------------------- |
+| YYYY-MM-DD | GitHub profile pin |                                                                 |                                |            0 |                 |          |        |           |                 |                                                                                  |                                              |
+| 2026-05-24 | X                  | https://x.com/jinhyuk9714/status/2058409016863428731            | Short feedback request         |            0 |                 |          |        |           |                 | Browser-use verified post URL opens and includes the repo link.                  | Check 24-hour metrics and reply to feedback. |
+| 2026-05-24 | Threads            | https://www.threads.com/@sunjay_vo/post/DYtWXE3Efzs             | X / Mastodon / Bluesky default |            0 |                 |          |        |           |                 | Browser-use verified post URL opens and includes the repo link.                  | Check 24-hour metrics and reply to feedback. |
+| 2026-05-24 | Bluesky            | https://bsky.app/profile/sjh9714.bsky.social/post/3mml6pictzc24 | Short feedback request         |            0 |                 |          |        |           |                 | Browser-use verified post URL opens after posting from logged-in Safari session. | Check 24-hour metrics and reply to feedback. |
+| YYYY-MM-DD | LinkedIn           |                                                                 |                                |            0 |                 |          |        |           |                 |                                                                                  |                                              |
+| YYYY-MM-DD | dev.to/blog        |                                                                 |                                |            0 |                 |          |        |           |                 |                                                                                  |                                              |
+| YYYY-MM-DD | Community post     |                                                                 |                                |            0 |                 |          |        |           |                 |                                                                                  |                                              |
 
 ## Daily star log
 
-| Date | Stars | Unique visitors | Clones | Issues/PRs | What changed today | Lesson |
-|---|---:|---:|---:|---:|---|---|
-| Day 0 | 0 |  |  |  | Repo published, CI passed, v0.1.0 released | First feedback posts published to X, Threads, and Bluesky. |
-| Day 1 |  |  |  |  |  |  |
-| Day 2 |  |  |  |  |  |  |
-| Day 3 |  |  |  |  |  |  |
-| Day 4 |  |  |  |  |  |  |
-| Day 5 |  |  |  |  |  |  |
-| Day 6 |  |  |  |  |  |  |
-| Day 7 |  |  |  |  |  |  |
+| Date  | Stars | Unique visitors | Clones | Issues/PRs | What changed today                         | Lesson                                                     |
+| ----- | ----: | --------------: | -----: | ---------: | ------------------------------------------ | ---------------------------------------------------------- |
+| Day 0 |     0 |                 |        |            | Repo published, CI passed, v0.1.0 released | First feedback posts published to X, Threads, and Bluesky. |
+| Day 1 |       |                 |        |            |                                            |                                                            |
+| Day 2 |       |                 |        |            |                                            |                                                            |
+| Day 3 |       |                 |        |            |                                            |                                                            |
+| Day 4 |       |                 |        |            |                                            |                                                            |
+| Day 5 |       |                 |        |            |                                            |                                                            |
+| Day 6 |       |                 |        |            |                                            |                                                            |
+| Day 7 |       |                 |        |            |                                            |                                                            |
 
 ## Launch-day checklist
 

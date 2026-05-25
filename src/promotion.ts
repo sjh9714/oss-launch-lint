@@ -65,6 +65,6 @@ export function renderPromotionCopy(input: PromotionInput): string {
     `I am looking for feedback from people who publish small OSS projects: ${repoUrl}`,
     "",
     "Only post this in communities where project feedback posts are allowed. If the rules are unclear, ask moderators first or do not post.",
-    ""
+    "",
   ].join("\n");
 }
