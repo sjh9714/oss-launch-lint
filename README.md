@@ -33,25 +33,27 @@ Next actions:
 
 ## Installation
 
-This package is not published to npm yet. From a checkout:
+Run without installing:
+
+```bash
+npx oss-launch-lint@latest .
+```
+
+Or install globally:
+
+```bash
+npm install -g oss-launch-lint
+oss-launch-lint .
+```
+
+From a source checkout:
 
 ```bash
 git clone https://github.com/sjh9714/oss-launch-lint.git
 cd oss-launch-lint
 npm install
 npm run build
-```
-
-Then run the CLI with Node:
-
-```bash
 node bin/oss-launch-lint --help
-```
-
-After npm publishing is approved and completed, the intended one-command path will be:
-
-```bash
-npx oss-launch-lint@latest .
 ```
 
 ## Quickstart
@@ -59,31 +61,31 @@ npx oss-launch-lint@latest .
 Audit the current repository and write launch assets:
 
 ```bash
-node bin/oss-launch-lint . --output launch-report.md --promotion-output promotion-copy.md
+npx oss-launch-lint@latest . --output launch-report.md --promotion-output promotion-copy.md
 ```
 
 Print JSON for automation:
 
 ```bash
-node bin/oss-launch-lint . --json --no-promotion
+npx oss-launch-lint@latest . --json --no-promotion
 ```
 
 Preview missing launch-readiness files without writing anything:
 
 ```bash
-node bin/oss-launch-lint . --fix --dry-run --no-promotion
+npx oss-launch-lint@latest . --fix --dry-run --no-promotion
 ```
 
 Create missing scaffold files after confirmation:
 
 ```bash
-node bin/oss-launch-lint . --fix --no-promotion
+npx oss-launch-lint@latest . --fix --no-promotion
 ```
 
 Use in CI-style checks:
 
 ```bash
-node bin/oss-launch-lint . --fail-under 80 --github-step-summary --no-promotion
+npx oss-launch-lint@latest . --fail-under 80 --github-step-summary --no-promotion
 ```
 
 Try the included demo fixture:
@@ -157,17 +159,17 @@ Safety rules:
 - `--fix --yes` skips the prompt for automation.
 - Existing files are never overwritten unless `--force` is explicitly provided.
 
-The workflow scaffold installs `oss-launch-lint` from the GitHub source repository so it remains truthful before npm publishing. After npm publishing is approved and completed, you can simplify it to `npx oss-launch-lint@latest`.
+The workflow scaffold uses `npx oss-launch-lint@latest` so other repositories can add a launch-readiness gate without cloning this source repository.
 
 ## GitHub Actions
 
 `oss-launch-lint` can act as a launch-readiness quality gate:
 
 ```bash
-node bin/oss-launch-lint . --fail-under 80 --github-step-summary --no-promotion
+npx oss-launch-lint@latest . --fail-under 80 --github-step-summary --no-promotion
 ```
 
-See [docs/github-actions.md](docs/github-actions.md) for the package-published `npx` workflow template and the current source-checkout alternative.
+See [docs/github-actions.md](docs/github-actions.md) for a copy-paste GitHub Actions workflow.
 
 ## CLI options
 
@@ -224,9 +226,7 @@ npm run format:check
 
 ## Roadmap
 
-- Publish an npm-enabled `v0.1.1` so strangers can run `npx oss-launch-lint@latest .`.
 - Expand `--fix` with language-specific templates.
-- Package the GitHub Actions mode as the default quality-gate path after npm publish.
 - Add more language-specific package metadata checks.
 - Add a terminal GIF or screenshot asset for the README.
 
