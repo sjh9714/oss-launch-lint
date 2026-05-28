@@ -4,6 +4,8 @@ Draft only. Do not create a GitHub release or publish to npm until explicitly ap
 
 Package dry-runs for `oss-launch-lint@0.1.1` pass. The real npm publish and GitHub release are still approval-gated.
 
+Real npm publishing also requires an authenticated npm session; `npm whoami` returned E401 during the final pre-release check.
+
 ## Highlights
 
 - Re-audits after `--fix`, so generated reports and final CLI status now reflect the repaired repository state.
