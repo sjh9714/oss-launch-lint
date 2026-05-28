@@ -1,6 +1,6 @@
 {
   "name": "oss-launch-lint",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Audit whether a GitHub repo is ready to share: README gaps, community files, CI checks, topic suggestions, release checklist, and ethical launch copy.",
   "homepage": "https://github.com/sjh9714/oss-launch-lint#readme",
   "repository": {

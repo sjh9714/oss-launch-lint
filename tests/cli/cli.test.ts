@@ -443,10 +443,14 @@ test("promotion copy falls back to normalized git remote URL", async () => {
   try {
     const init = spawnSync("git", ["init"], { cwd: repo, encoding: "utf8" });
     assert.equal(init.status, 0, init.stderr);
-    const remote = spawnSync("git", ["remote", "add", "origin", "git@github.com:example/fallback.git"], {
-      cwd: repo,
-      encoding: "utf8",
-    });
+    const remote = spawnSync(
+      "git",
+      ["remote", "add", "origin", "git@github.com:example/fallback.git"],
+      {
+        cwd: repo,
+        encoding: "utf8",
+      },
+    );
     assert.equal(remote.status, 0, remote.stderr);
 
     const result = spawnSync(

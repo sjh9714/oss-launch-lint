@@ -3,6 +3,11 @@ import path from "node:path";
 
 import type { AuditCheck, AuditResult, AuditSummary, CheckStatus } from "./types.js";
 
+interface CiWorkflowInfo {
+  files: string[];
+  runCommands: string[];
+}
+
 const REQUIRED_FILES = [
   {
     id: "license",
@@ -42,13 +47,45 @@ const REQUIRED_FILES = [
 ];
 
 const README_SECTIONS = [
-  { label: "installation", pattern: /\b(install|installation|setup)\b/i },
-  { label: "quickstart", pattern: /\b(quickstart|usage|getting started)\b/i },
-  { label: "example output", pattern: /\b(example|output|demo)\b/i },
-  { label: "roadmap", pattern: /\broadmap\b/i },
-  { label: "contributing", pattern: /\bcontribut/i },
-  { label: "support", pattern: /\b(support|help|questions)\b/i },
+  { label: "installation", headingPattern: /\b(install|installation|setup)\b/i },
+  { label: "quickstart", headingPattern: /\b(quickstart|usage|getting started)\b/i },
+  { label: "example output", headingPattern: /\b(example|output|demo)\b/i },
+  { label: "roadmap", headingPattern: /\broadmap\b/i },
+  { label: "contributing", headingPattern: /\bcontribut/i },
+  { label: "support", headingPattern: /\b(support|help|questions)\b/i },
 ];
+
+const CHECK_WEIGHTS: Record<string, number> = {
+  readme: 20,
+  license: 15,
+  ci: 15,
+  "test-script": 10,
+  "package-metadata": 10,
+  contributing: 8,
+  "code-of-conduct": 6,
+  security: 6,
+  changelog: 5,
+  "issue-template": 5,
+};
+
+const DEFAULT_IGNORED_DIRECTORIES = new Set([
+  ".cache",
+  ".git",
+  ".next",
+  ".nuxt",
+  ".parcel-cache",
+  ".turbo",
+  ".venv",
+  "build",
+  "coverage",
+  "dist",
+  "node_modules",
+  "out",
+  "target",
+  "tmp",
+  "vendor",
+  "venv",
+]);
 
 const TOPIC_LIMIT = 12;
 
@@ -62,12 +99,12 @@ export async function auditRepository(repoPath: string): Promise<AuditResult> {
   const readmePath = findFirst(fileMap, ["readme.md", "readme.markdown", "readme"]);
   const readme = readmePath ? await readTextIfPresent(absoluteRepoPath, readmePath) : "";
   const packageJson = await readPackageJson(absoluteRepoPath);
-  const ciWorkflowContents = await readCiWorkflowContents(absoluteRepoPath, files);
+  const ciWorkflowInfo = await readCiWorkflowInfo(absoluteRepoPath, files);
 
   const checks: AuditCheck[] = [
     checkReadme(readmePath, readme),
     ...REQUIRED_FILES.map((item) => checkRequiredFile(fileMap, item)),
-    checkCi(lowerFiles, ciWorkflowContents),
+    checkCi(ciWorkflowInfo),
     checkIssueTemplates(lowerFiles),
     checkPackageMetadata(packageJson),
     checkTestScript(packageJson),
@@ -103,17 +140,18 @@ async function assertReadableDirectory(repoPath: string): Promise<void> {
 
 async function listRelativeFiles(root: string): Promise<string[]> {
   const results: string[] = [];
+  const ignoreRules = await readGitignoreRules(root);
 
   async function walk(current: string): Promise<void> {
     const entries = await readdir(current, { withFileTypes: true });
 
     for (const entry of entries) {
-      if (entry.name === ".git" || entry.name === "node_modules" || entry.name === "dist") {
-        continue;
-      }
-
       const absolutePath = path.join(current, entry.name);
       const relativePath = normalizePath(path.relative(root, absolutePath));
+
+      if (shouldIgnoreEntry(entry.name, relativePath, entry.isDirectory(), ignoreRules)) {
+        continue;
+      }
 
       if (entry.isDirectory()) {
         await walk(absolutePath);
@@ -139,9 +177,10 @@ function checkReadme(readmePath: string | undefined, readme: string): AuditCheck
     };
   }
 
-  const missingSections = README_SECTIONS.filter((section) => !section.pattern.test(readme)).map(
-    (section) => section.label,
-  );
+  const headings = extractMarkdownHeadings(readme);
+  const missingSections = README_SECTIONS.filter(
+    (section) => !headings.some((heading) => section.headingPattern.test(heading)),
+  ).map((section) => section.label);
 
   if (readme.trim().length < 250 || missingSections.length >= 3) {
     return {
@@ -203,13 +242,8 @@ function checkRequiredFile(
   };
 }
 
-function checkCi(lowerFiles: Set<string>, workflowContents: string): AuditCheck {
-  const hasCi = [...lowerFiles].some(
-    (file) =>
-      file.startsWith(".github/workflows/") && (file.endsWith(".yml") || file.endsWith(".yaml")),
-  );
-
-  if (!hasCi) {
+function checkCi(workflowInfo: CiWorkflowInfo): AuditCheck {
+  if (workflowInfo.files.length === 0) {
     return {
       id: "ci",
       title: "Continuous integration",
@@ -220,7 +254,7 @@ function checkCi(lowerFiles: Set<string>, workflowContents: string): AuditCheck 
     };
   }
 
-  if (!hasMeaningfulCiCommand(workflowContents)) {
+  if (!hasMeaningfulCiCommand(workflowInfo.runCommands)) {
     return {
       id: "ci",
       title: "Continuous integration",
@@ -332,19 +366,22 @@ function summarize(checks: AuditCheck[]): AuditSummary {
 }
 
 function scoreChecks(checks: AuditCheck[]): number {
+  const totalWeight = checks.reduce((total, check) => total + weightForCheck(check.id), 0);
   const points = checks.reduce((total, check) => {
+    const weight = weightForCheck(check.id);
+
     if (check.status === "pass") {
-      return total + 1;
+      return total + weight;
     }
 
     if (check.status === "warn") {
-      return total + 0.5;
+      return total + weight * 0.5;
     }
 
     return total;
   }, 0);
 
-  return Math.round((points / checks.length) * 100);
+  return Math.round((points / totalWeight) * 100);
 }
 
 function buildNextActions(checks: AuditCheck[]): string[] {
@@ -431,7 +468,7 @@ async function readPackageJson(root: string): Promise<Record<string, unknown> | 
   }
 }
 
-async function readCiWorkflowContents(root: string, files: string[]): Promise<string> {
+async function readCiWorkflowInfo(root: string, files: string[]): Promise<CiWorkflowInfo> {
   const workflowFiles = files.filter((file) => {
     const lower = file.toLowerCase();
     return (
@@ -440,7 +477,10 @@ async function readCiWorkflowContents(root: string, files: string[]): Promise<st
   });
 
   const contents = await Promise.all(workflowFiles.map((file) => readTextIfPresent(root, file)));
-  return contents.join("\n");
+  return {
+    files: workflowFiles,
+    runCommands: contents.flatMap(extractWorkflowRunCommands),
+  };
 }
 
 async function readTextIfPresent(root: string, relativePath: string): Promise<string> {
@@ -478,11 +518,154 @@ function slugTopic(value: string): string {
     .replace(/^-|-$/g, "");
 }
 
-function hasMeaningfulCiCommand(contents: string): boolean {
+function weightForCheck(id: string): number {
+  return CHECK_WEIGHTS[id] ?? 1;
+}
+
+function extractMarkdownHeadings(markdown: string): string[] {
+  const headings: string[] = [];
+  let inFence = false;
+
+  for (const line of markdown.split(/\r?\n/)) {
+    if (/^\s*(```|~~~)/.test(line)) {
+      inFence = !inFence;
+      continue;
+    }
+
+    if (inFence) {
+      continue;
+    }
+
+    const match = /^(#{1,6})\s+(.+?)\s*#*\s*$/.exec(line.trim());
+    if (match) {
+      headings.push(match[2].trim());
+    }
+  }
+
+  return headings;
+}
+
+function extractWorkflowRunCommands(contents: string): string[] {
+  const commands: string[] = [];
+  const lines = contents.split(/\r?\n/);
+
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index];
+    const inlineMatch = /^(\s*)(?:-\s*)?run:\s*(.+?)\s*$/.exec(line);
+    if (!inlineMatch) {
+      continue;
+    }
+
+    const runIndent = inlineMatch[1].length;
+    const value = inlineMatch[2].trim();
+    if (value === "|" || value === ">") {
+      const blockLines: string[] = [];
+      for (index += 1; index < lines.length; index += 1) {
+        const blockLine = lines[index];
+        if (blockLine.trim() && leadingSpaces(blockLine) <= runIndent) {
+          index -= 1;
+          break;
+        }
+        blockLines.push(blockLine.slice(Math.min(blockLine.length, runIndent + 2)));
+      }
+      commands.push(blockLines.join("\n"));
+      continue;
+    }
+
+    commands.push(stripYamlQuotes(value));
+  }
+
+  return commands;
+}
+
+function hasMeaningfulCiCommand(commands: string[]): boolean {
+  return commands.some((command) => command.split(/\r?\n/).some(isMeaningfulCiLine));
+}
+
+function isMeaningfulCiLine(line: string): boolean {
+  const command = line.trim();
+  if (!command || command.startsWith("#") || /^(echo|printf)\b/i.test(command)) {
+    return false;
+  }
+
   return (
-    /\b(npm|pnpm|yarn)\s+(run\s+)?(test|lint|build)\b/i.test(contents) ||
-    /\b(pytest|cargo\s+test|go\s+test|dotnet\s+test|bundle\s+exec\s+rspec|mix\s+test)\b/i.test(
-      contents,
+    /\b(npm|pnpm|yarn)\s+(run\s+)?(test|lint|build)\b/i.test(command) ||
+    /\bbun\s+(test|run\s+(test|lint|build))\b/i.test(command) ||
+    /\b(pnpm|npm|yarn|bun)\s+exec\s+(vitest|jest|eslint|tsc|prettier|biome)\b/i.test(command) ||
+    /\b(make|just)\s+(test|lint|build|check)\b/i.test(command) ||
+    /\b(uv\s+run\s+pytest|pytest|cargo\s+test|go\s+test|dotnet\s+test|bundle\s+exec\s+rspec|mix\s+test)\b/i.test(
+      command,
     )
   );
+}
+
+function leadingSpaces(value: string): number {
+  return value.length - value.trimStart().length;
+}
+
+function stripYamlQuotes(value: string): string {
+  if (
+    (value.startsWith('"') && value.endsWith('"')) ||
+    (value.startsWith("'") && value.endsWith("'"))
+  ) {
+    return value.slice(1, -1);
+  }
+
+  return value;
+}
+
+async function readGitignoreRules(root: string): Promise<string[]> {
+  const contents = await readTextIfPresent(root, ".gitignore");
+  return contents
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => line && !line.startsWith("#") && !line.startsWith("!"));
+}
+
+function shouldIgnoreEntry(
+  name: string,
+  relativePath: string,
+  isDirectory: boolean,
+  ignoreRules: string[],
+): boolean {
+  if (isDirectory && DEFAULT_IGNORED_DIRECTORIES.has(name)) {
+    return true;
+  }
+
+  return ignoreRules.some((rule) => matchesIgnoreRule(rule, relativePath, name, isDirectory));
+}
+
+function matchesIgnoreRule(
+  rawRule: string,
+  relativePath: string,
+  name: string,
+  isDirectory: boolean,
+): boolean {
+  const directoryOnly = rawRule.endsWith("/");
+  const anchored = rawRule.startsWith("/");
+  const rule = rawRule.replace(/^\/+/, "").replace(/\/+$/, "");
+
+  if (!rule || (directoryOnly && !isDirectory)) {
+    return false;
+  }
+
+  if (!rule.includes("*")) {
+    if (anchored || rule.includes("/")) {
+      return relativePath === rule || relativePath.startsWith(`${rule}/`);
+    }
+
+    return name === rule || relativePath.split("/").includes(rule);
+  }
+
+  const pattern = wildcardPattern(rule);
+  if (anchored || rule.includes("/")) {
+    return pattern.test(relativePath);
+  }
+
+  return pattern.test(name);
+}
+
+function wildcardPattern(rule: string): RegExp {
+  const escaped = rule.replace(/[.+^${}()|[\]\\]/g, "\\$&").replace(/\*/g, ".*");
+  return new RegExp(`^${escaped}$`);
 }
