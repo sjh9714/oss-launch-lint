@@ -24,18 +24,19 @@ node bin/oss-launch-lint . --output tmp/self-report.md --promotion-output tmp/se
 
 ## Latest verified results
 
-- `npm test`: 11/11 tests passing.
+- `npm test`: 41/41 tests passing.
 - `npm run lint`: TypeScript check passed.
 - `npm run build`: compiled runtime files into `dist/`.
 - `npm run smoke`: built bin printed help and audited the demo fixture as 100/100.
-- `npm pack --dry-run`: package dry-run included runtime files, README, license, changelog, contributing guide, code of conduct, and security policy.
+- `npm pack --dry-run`: package dry-run included 27 expected files and excluded local duplicate artifacts such as `dist/fix 2.*`.
+- `npm publish --dry-run --access public`: completed successfully without publishing.
 - Self-audit: this repo scored 100/100 after build.
 
 ## GitHub launch results
 
 - Public repository: https://github.com/sjh9714/oss-launch-lint
 - Default branch: `main`
-- CI run: https://github.com/sjh9714/oss-launch-lint/actions/runs/26349806058
+- CI run: https://github.com/sjh9714/oss-launch-lint/actions/runs/26586400610
 - CI result: success
 - Release: https://github.com/sjh9714/oss-launch-lint/releases/tag/v0.1.0
 - Release status: published, not draft, not prerelease
@@ -77,10 +78,18 @@ gh release create v0.1.0 \
 
 ## Promotion status
 
-- External posting performed: none.
-- Approved channels: none yet.
+- External posting performed: X, Threads, and Bluesky.
+- Approved channels: X, Threads, Bluesky.
 - Copy/paste drafts: [docs/promotion-copy.md](promotion-copy.md).
 - Metrics tracker: [docs/metrics-tracker.md](metrics-tracker.md).
+
+## v0.1.1 preparation status
+
+- Source version: `0.1.1`.
+- npm package name: available at last check; `npm view oss-launch-lint version` returned 404.
+- npm publishing: not performed.
+- GitHub release `v0.1.1`: not created.
+- Release notes draft: [docs/release-notes-v0.1.1.md](release-notes-v0.1.1.md).
 
 ## Remaining approval-only blockers
 

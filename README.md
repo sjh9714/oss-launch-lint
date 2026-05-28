@@ -116,15 +116,27 @@ Pass: 9 | Warn: 1 | Fail: 0
 open-source, github, developer-tools, cli, typescript, nodejs
 ```
 
+`--fix` reports show the improvement after scaffolding:
+
+```text
+## Fix summary
+
+Score before fix: 5/100
+Score after fix: 58/100
+Scaffold: 7 written, 0 skipped
+```
+
 ## What it checks
 
-- README presence and launch-critical sections
+- README presence and launch-critical section headings
 - License, contributing guide, code of conduct, security policy, and changelog
-- GitHub Actions workflow
+- GitHub Actions workflow with meaningful `run:` verification commands
 - Issue templates
 - Package metadata and test script
 - Topic suggestions from files, README text, and package keywords
 - Release checklist and ethical launch note
+
+Scores are weighted so launch-critical gaps, such as a missing README, license, CI, or test command, count more than nice-to-have launch polish.
 
 ## Safe scaffolding
 
@@ -198,7 +210,7 @@ Options:
 
 ## Demo and screenshots
 
-For a quick text demo, run the fixture command above and open `tmp/demo-report.md`. For a visual demo, record the same command with your terminal recorder of choice and show the generated report scrolling below the command output.
+For a quick text demo, run the fixture command above and open `tmp/demo-report.md`. The `--fix` example above shows the current before/after flow that should become the visual demo. For a visual demo, record the same commands with your terminal recorder of choice and show the generated report scrolling below the command output.
 
 ## Development
 
@@ -213,7 +225,7 @@ npm run format:check
 ## Roadmap
 
 - Publish an npm-enabled `v0.1.1` so strangers can run `npx oss-launch-lint@latest .`.
-- Expand `--fix` with language-specific templates and more before/after guidance.
+- Expand `--fix` with language-specific templates.
 - Package the GitHub Actions mode as the default quality-gate path after npm publish.
 - Add more language-specific package metadata checks.
 - Add a terminal GIF or screenshot asset for the README.
