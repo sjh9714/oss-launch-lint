@@ -135,7 +135,7 @@ test("--fail-under exits non-zero when the score is below the threshold", async 
   try {
     const result = spawnSync(
       process.execPath,
-      ["--import", "tsx", cliPath, repo, "--fail-under", "101", "--no-promotion"],
+      ["--import", "tsx", cliPath, repo, "--fail-under", "100", "--no-promotion"],
       {
         cwd: rootDir,
         encoding: "utf8",
@@ -143,10 +143,24 @@ test("--fail-under exits non-zero when the score is below the threshold", async 
     );
 
     assert.equal(result.status, 1);
-    assert.match(result.stderr, /Score \d+\/100 is below fail-under threshold 101/);
+    assert.match(result.stderr, /Score \d+\/100 is below fail-under threshold 100/);
   } finally {
     await rm(repo, { recursive: true, force: true });
   }
+});
+
+test("--fail-under rejects scores above 100", () => {
+  const result = spawnSync(
+    process.execPath,
+    ["--import", "tsx", cliPath, "--fail-under", "101", "--no-promotion"],
+    {
+      cwd: rootDir,
+      encoding: "utf8",
+    },
+  );
+
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /--fail-under must be between 0 and 100/);
 });
 
 test("--fail-under exits zero when the score meets the threshold", async () => {
@@ -167,6 +181,20 @@ test("--fail-under exits zero when the score meets the threshold", async () => {
   } finally {
     await rm(repo, { recursive: true, force: true });
   }
+});
+
+test("--json cannot be combined with --github-step-summary", () => {
+  const result = spawnSync(
+    process.execPath,
+    ["--import", "tsx", cliPath, "--json", "--github-step-summary", "--no-promotion"],
+    {
+      cwd: rootDir,
+      encoding: "utf8",
+    },
+  );
+
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /--json cannot be combined with --github-step-summary/);
 });
 
 test("--github-step-summary appends the Markdown report when configured", async () => {
@@ -291,6 +319,33 @@ test("--fix --yes creates missing scaffold files without prompting", async () =>
   }
 });
 
+test("--fix --yes writes a post-fix report with before and after scores", async () => {
+  const repo = await mkdtemp(path.join(tmpdir(), "oss-launch-lint-cli-fix-"));
+  const output = path.join(repo, "report.md");
+
+  try {
+    const result = spawnSync(
+      process.execPath,
+      ["--import", "tsx", cliPath, repo, "--fix", "--yes", "--output", output, "--no-promotion"],
+      {
+        cwd: rootDir,
+        encoding: "utf8",
+      },
+    );
+
+    assert.equal(result.status, 0, result.stderr);
+    const report = await readFile(output, "utf8");
+    assert.match(report, /## Fix summary/);
+    assert.match(report, /Score before fix: \d+\/100/);
+    assert.match(report, /Score after fix: \d+\/100/);
+    assert.match(report, /Scaffold: \d+ written, \d+ skipped/);
+    assert.doesNotMatch(report, /CONTRIBUTING\.md is missing/);
+    assert.match(report, /Contributing guide found at CONTRIBUTING\.md/);
+  } finally {
+    await rm(repo, { recursive: true, force: true });
+  }
+});
+
 test("--fix --yes does not overwrite existing files without --force", async () => {
   const repo = await mkdtemp(path.join(tmpdir(), "oss-launch-lint-cli-fix-"));
   const contributingPath = path.join(repo, "CONTRIBUTING.md");
@@ -330,6 +385,93 @@ test("--fix --yes --force overwrites scaffold targets", async () => {
 
     assert.equal(result.status, 0, result.stderr);
     assert.notEqual(await readFile(contributingPath, "utf8"), "custom guidance\n");
+  } finally {
+    await rm(repo, { recursive: true, force: true });
+  }
+});
+
+test("promotion copy uses normalized package repository URL", async () => {
+  const repo = await makeRepo();
+  const promotionOutput = path.join(repo, "promotion.md");
+
+  try {
+    await writeFile(
+      path.join(repo, "package.json"),
+      JSON.stringify(
+        {
+          name: "demo",
+          repository: { type: "git", url: "git+https://github.com/example/demo.git" },
+          scripts: { test: "node --test" },
+        },
+        null,
+        2,
+      ),
+    );
+
+    const result = spawnSync(
+      process.execPath,
+      [
+        "--import",
+        "tsx",
+        cliPath,
+        repo,
+        "--output",
+        path.join(repo, "report.md"),
+        "--promotion-output",
+        promotionOutput,
+      ],
+      {
+        cwd: rootDir,
+        encoding: "utf8",
+      },
+    );
+
+    assert.equal(result.status, 0, result.stderr);
+    const promotion = await readFile(promotionOutput, "utf8");
+    assert.match(promotion, /https:\/\/github\.com\/example\/demo/);
+    assert.doesNotMatch(promotion, /git\+https/);
+    assert.doesNotMatch(promotion, /Add your repository URL before posting/);
+  } finally {
+    await rm(repo, { recursive: true, force: true });
+  }
+});
+
+test("promotion copy falls back to normalized git remote URL", async () => {
+  const repo = await makeRepo();
+  const promotionOutput = path.join(repo, "promotion.md");
+
+  try {
+    const init = spawnSync("git", ["init"], { cwd: repo, encoding: "utf8" });
+    assert.equal(init.status, 0, init.stderr);
+    const remote = spawnSync("git", ["remote", "add", "origin", "git@github.com:example/fallback.git"], {
+      cwd: repo,
+      encoding: "utf8",
+    });
+    assert.equal(remote.status, 0, remote.stderr);
+
+    const result = spawnSync(
+      process.execPath,
+      [
+        "--import",
+        "tsx",
+        cliPath,
+        repo,
+        "--output",
+        path.join(repo, "report.md"),
+        "--promotion-output",
+        promotionOutput,
+      ],
+      {
+        cwd: rootDir,
+        encoding: "utf8",
+      },
+    );
+
+    assert.equal(result.status, 0, result.stderr);
+    const promotion = await readFile(promotionOutput, "utf8");
+    assert.match(promotion, /https:\/\/github\.com\/example\/fallback/);
+    assert.doesNotMatch(promotion, /git@github\.com/);
+    assert.doesNotMatch(promotion, /Add your repository URL before posting/);
   } finally {
     await rm(repo, { recursive: true, force: true });
   }

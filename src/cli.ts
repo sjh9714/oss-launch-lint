@@ -1,12 +1,15 @@
+import { execFile } from "node:child_process";
 import { appendFile, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { createInterface } from "node:readline/promises";
+import { promisify } from "node:util";
 import { fileURLToPath } from "node:url";
 
 import { auditRepository } from "./audit.js";
-import { applyFixes, planFixes, renderFixPlan } from "./fix.js";
+import { applyFixes, type FixResult, planFixes, renderFixPlan } from "./fix.js";
 import { renderPromotionCopy } from "./promotion.js";
 import { renderJson, renderMarkdownReport } from "./report.js";
+import type { AuditResult } from "./types.js";
 
 interface CliOptions {
   repoPath: string;
@@ -22,6 +25,9 @@ interface CliOptions {
   githubStepSummary: boolean;
 }
 
+const execFileAsync = promisify(execFile);
+const REPO_URL_PLACEHOLDER = "Add your repository URL before posting.";
+
 export async function main(argv = process.argv.slice(2)): Promise<number> {
   try {
     const options = parseArgs(argv);
@@ -36,8 +42,9 @@ export async function main(argv = process.argv.slice(2)): Promise<number> {
       return 0;
     }
 
-    const result = await auditRepository(options.repoPath);
-    const markdown = renderMarkdownReport(result);
+    let result = await auditRepository(options.repoPath);
+    const beforeFixResult = result;
+    let fixResult: FixResult | undefined;
     const reportToStdout = options.output === "-";
 
     if (options.fix) {
@@ -54,11 +61,12 @@ export async function main(argv = process.argv.slice(2)): Promise<number> {
           return 1;
         }
 
-        const fixResult = await applyFixes(options);
+        fixResult = await applyFixes(options);
         process.stdout.write(renderFixPlan(fixResult.actions, false));
         process.stdout.write(
           `Scaffold complete: ${fixResult.wrote.length} written, ${fixResult.skipped.length} skipped.\n`,
         );
+        result = await auditRepository(options.repoPath);
       }
     }
 
@@ -66,6 +74,10 @@ export async function main(argv = process.argv.slice(2)): Promise<number> {
       process.stdout.write(renderJson(result));
       return exitForThreshold(result.score, options.failUnder);
     }
+
+    const markdown = fixResult
+      ? addFixSummary(renderMarkdownReport(result), beforeFixResult, result, fixResult)
+      : renderMarkdownReport(result);
 
     if (!options.dryRun) {
       if (reportToStdout) {
@@ -80,7 +92,7 @@ export async function main(argv = process.argv.slice(2)): Promise<number> {
           options.promotionOutput,
           renderPromotionCopy({
             repoName: inferRepoName(result.repoPath),
-            repoUrl: "Add your repository URL before posting.",
+            repoUrl: await inferRepoUrl(result.repoPath),
             topics: result.topics,
           }),
         );
@@ -206,8 +218,8 @@ function requireValue(flag: string, value: string | undefined): string {
 
 function parseThreshold(value: string): number {
   const threshold = Number(value);
-  if (!Number.isFinite(threshold) || threshold < 0) {
-    throw new Error("--fail-under must be a non-negative number.");
+  if (!Number.isFinite(threshold) || threshold < 0 || threshold > 100) {
+    throw new Error("--fail-under must be between 0 and 100.");
   }
 
   return threshold;
@@ -228,6 +240,10 @@ function validateOptionCombinations(options: CliOptions): void {
 
   if (options.json && options.fix) {
     throw new Error("--json cannot be combined with --fix.");
+  }
+
+  if (options.json && options.githubStepSummary) {
+    throw new Error("--json cannot be combined with --github-step-summary.");
   }
 }
 
@@ -284,6 +300,100 @@ function exitForThreshold(score: number, threshold: number | undefined): number 
 
 function inferRepoName(repoPath: string): string {
   return path.basename(path.resolve(repoPath)) || "oss-launch-lint";
+}
+
+function addFixSummary(
+  markdown: string,
+  before: AuditResult,
+  after: AuditResult,
+  fixResult: FixResult,
+): string {
+  const summary = [
+    "## Fix summary",
+    "",
+    `Score before fix: ${before.score}/100`,
+    `Score after fix: ${after.score}/100`,
+    `Scaffold: ${fixResult.wrote.length} written, ${fixResult.skipped.length} skipped`,
+    "",
+  ].join("\n");
+
+  return markdown.replace("\n## Checks\n", `\n${summary}\n## Checks\n`);
+}
+
+async function inferRepoUrl(repoPath: string): Promise<string> {
+  const packageUrl = await readPackageRepositoryUrl(repoPath);
+  const normalizedPackageUrl = normalizeRepoUrl(packageUrl);
+  if (normalizedPackageUrl) {
+    return normalizedPackageUrl;
+  }
+
+  const remoteUrl = await readGitRemoteUrl(repoPath);
+  return normalizeRepoUrl(remoteUrl) ?? REPO_URL_PLACEHOLDER;
+}
+
+async function readPackageRepositoryUrl(repoPath: string): Promise<string | undefined> {
+  try {
+    const contents = await readFile(path.join(path.resolve(repoPath), "package.json"), "utf8");
+    const parsed: unknown = JSON.parse(contents);
+    if (!isRecord(parsed)) {
+      return undefined;
+    }
+
+    const repository = parsed.repository;
+    if (typeof repository === "string") {
+      return repository;
+    }
+
+    if (isRecord(repository) && typeof repository.url === "string") {
+      return repository.url;
+    }
+  } catch {
+    return undefined;
+  }
+
+  return undefined;
+}
+
+async function readGitRemoteUrl(repoPath: string): Promise<string | undefined> {
+  try {
+    const { stdout } = await execFileAsync("git", [
+      "-C",
+      path.resolve(repoPath),
+      "remote",
+      "get-url",
+      "origin",
+    ]);
+    return stdout.trim();
+  } catch {
+    return undefined;
+  }
+}
+
+function normalizeRepoUrl(value: string | undefined): string | undefined {
+  if (!value?.trim()) {
+    return undefined;
+  }
+
+  let url = value.trim();
+  if (url.startsWith("git+")) {
+    url = url.slice("git+".length);
+  }
+
+  const gitSshMatch = /^git@([^:]+):(.+)$/.exec(url);
+  if (gitSshMatch) {
+    url = `https://${gitSshMatch[1]}/${gitSshMatch[2]}`;
+  }
+
+  const sshUrlMatch = /^ssh:\/\/git@([^/]+)\/(.+)$/.exec(url);
+  if (sshUrlMatch) {
+    url = `https://${sshUrlMatch[1]}/${sshUrlMatch[2]}`;
+  }
+
+  return url.replace(/\.git$/, "");
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 function helpText(): string {
