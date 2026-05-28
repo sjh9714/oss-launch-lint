@@ -36,7 +36,7 @@ node bin/oss-launch-lint . --output tmp/self-report.md --promotion-output tmp/se
 
 - Public repository: https://github.com/sjh9714/oss-launch-lint
 - Default branch: `main`
-- CI run: https://github.com/sjh9714/oss-launch-lint/actions/runs/26586400610
+- CI run: https://github.com/sjh9714/oss-launch-lint/actions/runs/26587397597
 - CI result: success
 - Release: https://github.com/sjh9714/oss-launch-lint/releases/tag/v0.1.0
 - Release status: published, not draft, not prerelease
@@ -88,6 +88,7 @@ gh release create v0.1.0 \
 - Source version: `0.1.1`.
 - npm package name: available at last check; `npm view oss-launch-lint version` returned 404.
 - npm publishing: not performed.
+- npm auth: `npm whoami` returned E401, so real publish also requires logging in to npm.
 - GitHub release `v0.1.1`: not created.
 - Release notes draft: [docs/release-notes-v0.1.1.md](release-notes-v0.1.1.md).
 
@@ -95,6 +96,7 @@ gh release create v0.1.0 \
 
 - Any social/community posting.
 - npm package publishing.
+- GitHub release/tag creation for `v0.1.1`.
 
 ## Launch expectations
 

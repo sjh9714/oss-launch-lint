@@ -4,7 +4,7 @@
 
 - Launch timestamp: 2026-05-24 11:33:46 KST / 2026-05-24T02:33:46Z
 - Repository URL: `https://github.com/sjh9714/oss-launch-lint`
-- CI run URL: `https://github.com/sjh9714/oss-launch-lint/actions/runs/26586400610`
+- CI run URL: `https://github.com/sjh9714/oss-launch-lint/actions/runs/26587397597`
 - Release URL: `https://github.com/sjh9714/oss-launch-lint/releases/tag/v0.1.0`
 - Approved channels: X, Threads, Bluesky
 - External posts performed: X, Threads, Bluesky
@@ -23,6 +23,7 @@
 | 2026-05-24 | v0.1.0 release published         | https://github.com/sjh9714/oss-launch-lint/releases/tag/v0.1.0      | Release created from `docs/release-notes-v0.1.0.md`.       |
 | 2026-05-24 | First feedback posts published   | https://x.com/jinhyuk9714/status/2058409016863428731                | Published feedback-first posts to X, Threads, and Bluesky. |
 | 2026-05-29 | v0.1.1 hotfix CI passed          | https://github.com/sjh9714/oss-launch-lint/actions/runs/26586400610 | Post-fix report refresh merged to `main`.                  |
+| 2026-05-29 | v0.1.1 polish CI passed          | https://github.com/sjh9714/oss-launch-lint/actions/runs/26587397597 | Quality polish and v0.1.1 prep merged to `main`.           |
 
 ## Manual promotion intake
 
