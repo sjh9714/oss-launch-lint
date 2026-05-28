@@ -161,12 +161,7 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: 24
-      - name: Install oss-launch-lint from source
-        run: |
-          git clone --depth 1 https://github.com/sjh9714/oss-launch-lint.git "$RUNNER_TEMP/oss-launch-lint"
-          npm ci --prefix "$RUNNER_TEMP/oss-launch-lint"
-          npm run build --prefix "$RUNNER_TEMP/oss-launch-lint"
-      - run: node "$RUNNER_TEMP/oss-launch-lint/bin/oss-launch-lint" "$GITHUB_WORKSPACE" --fail-under 80 --github-step-summary --no-promotion
+      - run: npx oss-launch-lint@latest "$GITHUB_WORKSPACE" --fail-under 80 --github-step-summary --no-promotion
 `,
   },
 ];

@@ -168,7 +168,7 @@ test("force replaces a symlink with a regular scaffold file", async () => {
   }
 });
 
-test("scaffolded workflow uses source-checkout commands while npm is unpublished", async () => {
+test("scaffolded workflow uses npx now that npm publishing is enabled", async () => {
   const repo = await makeTempRepo();
 
   try {
@@ -183,11 +183,10 @@ test("scaffolded workflow uses source-checkout commands while npm is unpublished
       path.join(repo, ".github/workflows/oss-launch-lint.yml"),
       "utf8",
     );
-    assert.match(workflow, /npm ci/);
-    assert.match(workflow, /npm run build/);
-    assert.match(workflow, /RUNNER_TEMP\/oss-launch-lint/);
-    assert.match(workflow, /node "\$RUNNER_TEMP\/oss-launch-lint\/bin\/oss-launch-lint"/);
-    assert.doesNotMatch(workflow, /npx oss-launch-lint@latest/);
+    assert.match(workflow, /npx oss-launch-lint@latest/);
+    assert.match(workflow, /\$GITHUB_WORKSPACE/);
+    assert.doesNotMatch(workflow, /RUNNER_TEMP\/oss-launch-lint/);
+    assert.doesNotMatch(workflow, /npm ci --prefix/);
   } finally {
     await rm(repo, { recursive: true, force: true });
   }

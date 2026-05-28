@@ -1,10 +1,8 @@
-# v0.1.1 release notes draft
+# v0.1.1 release notes
 
-Draft only. Do not create a GitHub release or publish to npm until explicitly approved.
+Release notes for the npm-enabled `v0.1.1` release.
 
-Package dry-runs for `oss-launch-lint@0.1.1` pass. The real npm publish and GitHub release are still approval-gated.
-
-Real npm publishing also requires an authenticated npm session; `npm whoami` returned E401 during the final pre-release check.
+Package dry-runs for `oss-launch-lint@0.1.1` passed before publishing.
 
 ## Highlights
 
@@ -24,24 +22,21 @@ Real npm publishing also requires an authenticated npm session; `npm whoami` ret
 
 ## Install
 
-Current source-checkout usage:
-
-```bash
-git clone https://github.com/sjh9714/oss-launch-lint.git
-cd oss-launch-lint
-npm install
-npm run build
-node bin/oss-launch-lint . --output launch-report.md --promotion-output promotion-copy.md
-```
-
-After npm publishing is approved and completed:
+Run without installing:
 
 ```bash
 npx oss-launch-lint@latest .
 ```
 
+Or install globally:
+
+```bash
+npm install -g oss-launch-lint
+oss-launch-lint .
+```
+
 ## Suggested release note
 
 ```text
-Adds safer launch-readiness scaffolding, post-fix report refreshes, weighted scoring, stronger README/CI detection, GitHub Actions documentation, and repository formatting. npm/npx availability should be announced only after the package is actually published.
+Adds npm/npx availability, safer launch-readiness scaffolding, post-fix report refreshes, weighted scoring, stronger README/CI detection, GitHub Actions documentation, and repository formatting.
 ```
